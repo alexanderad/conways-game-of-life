@@ -1,6 +1,7 @@
 {
   "name": "conways-game-of-life",
   "version": "0.0.1",
+  "private": true,
   "description": "The implementation of Conway's Game of Life using Node.js, Express.js and D3.js",
   "main": "life.js",
   "scripts": {
@@ -12,10 +13,7 @@
   },
   "keywords": [
     "nodejs",
-    "conways",
-    "game",
-    "of",
-    "life",
+    "conways-game-of-life",
     "experiments"
   ],
   "author": "Alexander Shchapov <alexanderad@gmail.com>",
@@ -26,7 +24,8 @@
   "homepage": "https://github.com/alexanderad/conways-game-of-life",
   "dependencies": {
     "express": "^4.10.6",
-    "d3": "^3.5.3"
+    "d3": "^3.5.3",
+    "morgan": "^1.5.0"
   },
   "devDependencies": {
     "mocha": "^2.1.0",
