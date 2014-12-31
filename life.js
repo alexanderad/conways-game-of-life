@@ -1,7 +1,6 @@
 var express = require('express'),
     fs = require('fs'),
-    morgan = require('morgan'),
-    TorusArray = require('./life/torus-array.js');
+    morgan = require('morgan');
 
 var app = express();
 

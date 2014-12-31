@@ -60,6 +60,6 @@
         return grid;
     };
 
-    module.exports = TorusArray;
+    exports.TorusArray = TorusArray;
 
-})(typeof exports === 'undefined'? this['torus-array']={}: exports);
+})(typeof exports === 'undefined'? this['modules']={}: exports);
