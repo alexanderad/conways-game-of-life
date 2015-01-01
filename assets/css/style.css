@@ -1,0 +1,12 @@
+.field-container {
+    width: 500px;
+    margin: 0 auto;
+}
+
+.fieldmap {
+    background: #ccc;
+}
+
+.main {
+    padding-top: 70px;
+}

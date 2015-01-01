@@ -1,5 +1,4 @@
 var express = require('express'),
-    fs = require('fs'),
     morgan = require('morgan');
 
 var app = express();
