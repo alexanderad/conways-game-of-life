@@ -66,7 +66,7 @@
       //   var duration = 100;
       //   return i / 100 * duration;
       // })
-      .duration(700)
+      .duration(150)
       .attr('fill', function(d) {
         return d == 1 ? '#000' : '#fff';
       });
@@ -95,18 +95,51 @@
 
   function stepEvolution(currentTorus) {
     var nextTorus = new TorusArray(currentTorus.width, currentTorus.height);
+    for(var i = 0; i < currentTorus.width; i++) {
+      for(var j = 0; j < currentTorus.height; j++) {
+        var neighbors = currentTorus.neighbors(i, j).map(function(currValue) {
+          return currentTorus.get(currValue[0], currValue[1]);
+        });
+
+        var population = neighbors.reduce(function(prevValue, currValue) {
+          return prevValue + currValue;
+        });
+
+        // в пустой (мёртвой) клетке, рядом с которой ровно три живые клетки, 
+        // зарождается жизнь;
+        if(currentTorus.get(i, j) == 0 && population == 3) {
+          nextTorus.set(i, j, 1);
+        }
+        
+        if(currentTorus.get(i, j) == 1) {
+          if(population < 2 || population > 3) {
+            // если соседей меньше двух или больше трёх) клетка умирает 
+            // («от одиночества» или «от перенаселённости»)
+            nextTorus.set(i, j, 0);  
+          }
+          else {
+            // если у живой клетки есть две или три живые соседки, то эта клетка 
+            // продолжает жить;
+            nextTorus.set(i, j, 1);
+          }
+        }
+      };
+    };
     return nextTorus;
   };
 
   TorusArray = modules.TorusArray;
 
-  var w = 10,
-      h = 10;
+  var w = 50,
+      h = 16;
 
-  var lifeTorus = new TorusArray(w, h);
-  lifeTorus.set(4, 3, 1);
-  lifeTorus.set(4, 4, 1);
+  lifeTorus = new TorusArray(w, h);
+  lifeTorus.set(5, 3, 1);
+  lifeTorus.set(5, 4, 1);
+  lifeTorus.set(5, 5, 1);
   lifeTorus.set(4, 5, 1);
+  lifeTorus.set(3, 4, 1);
+  
 
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
@@ -115,10 +148,6 @@
     console.log("green btn click");
     lifeTorus = stepEvolution(lifeTorus);
     updateGrid(lifeTorus);
-  });
-
-  d3.select('#id_blue_btn').on('click', function() {
-    console.log("blue btn click");
   });
 
 })();

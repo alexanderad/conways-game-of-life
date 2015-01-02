@@ -50,17 +50,17 @@
         }
         
         function initGrid(width, height) {
-            var grid = [];
+            var initialGrid = [];
             for(var i = 0; i < height; i++) {
-                grid[i] = [];
+                initialGrid[i] = [];
                 for(var j = 0; j < width; j++) {
-                    grid[i][j] = initializer(i, j);
+                    initialGrid[i][j] = initializer(i, j);
                 };
             };
-            return grid;
+            return initialGrid;
         };
 
-        grid = initGrid(width, height);
+        this.grid = initGrid(width, height);
     };
 
     TorusArray.prototype.normalizeIndex = function(i, j) {
@@ -72,22 +72,42 @@
 
     TorusArray.prototype.print = function() {
         for(var i = 0; i < this.height; i++) {    
-            console.log(grid[i]);
+            console.log(this.grid[i]);
         };
     };
 
     TorusArray.prototype.get = function(i, j) {
         var index = this.normalizeIndex(i, j);
-        return grid[index[0]][index[1]];
+        return this.grid[index[0]][index[1]];
     };
 
     TorusArray.prototype.set = function(i, j, value) {
         var index = this.normalizeIndex(i, j);
-        grid[index[0]][index[1]] = value;
+        this.grid[index[0]][index[1]] = value;
+    };
+
+    TorusArray.prototype.neighbors = function(i, j) {
+        var index = this.normalizeIndex(i, j);
+        var neighborsIndexes = [
+            [-1, -1], [0, -1], [1, -1],
+            [-1, 0], [1, 0],
+            [-1, 1], [0, 1], [1, 1]
+        ];
+        var neighbors = [];
+        for(var k = 0; k < neighborsIndexes.length; k++) {
+            var neighborIndex = neighborsIndexes[k];
+            neighbors.push(
+                this.normalizeIndex(
+                    index[0] + neighborIndex[0],
+                    index[1] + neighborIndex[1]
+                )
+            )
+        }
+        return neighbors;
     };
 
     TorusArray.prototype.toArray = function() {
-        return grid;
+        return this.grid;
     };
 
     exports.TorusArray = TorusArray;
