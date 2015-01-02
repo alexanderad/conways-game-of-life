@@ -130,8 +130,8 @@
 
   TorusArray = modules.TorusArray;
 
-  var w = 50,
-      h = 16;
+  var w = 35,
+      h = 25;
 
   lifeTorus = new TorusArray(w, h);
   lifeTorus.set(5, 3, 1);
@@ -144,7 +144,7 @@
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
 
-  d3.select('#id_green_btn').on('click', function() {
+  d3.select('#id_start_btn').on('click', function() {
     console.log("green btn click");
     lifeTorus = stepEvolution(lifeTorus);
     updateGrid(lifeTorus);

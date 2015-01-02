@@ -36,15 +36,27 @@
 
     <div class="container main">
       <div class="row">
-        <div class="col-md-3">
-          <button id="id_green_btn" class="btn btn-success">green</button>
+        <div class="col-md-6">
+          <h2>Grid</h2>
+          <button id="id_start_btn" class="btn btn-success">
+            <!-- <span class="glyphicon glyphicon-play" aria-hidden="true">Play</span> -->
+            Start
+          </button>
           <button id="id_blue_btn" class="btn btn-primary">blue</button>
+          <div class="field-container">
+            <svg role="fieldmap" class="fieldmap"></svg>
+          </div>
         </div>
-      </div>
-      <br />
-      <div class="row">
-        <div class="col-md-3">
-          <svg role="fieldmap" class="fieldmap"></svg>
+        <div class="col-md-6">
+        <h2>Rules</h2>
+        The universe of the Game of Life is an infinite two-dimensional orthogonal grid of square cells, each of which is in one of two possible states, alive or dead. Every cell interacts with its eight neighbours, which are the cells that are horizontally, vertically, or diagonally adjacent. 
+        <br /><br />At each step in time, the following transitions occur:
+        <ul>
+          <li>Any live cell with fewer than two live neighbours dies, as if caused by under-population.</li>
+          <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+          <li>Any live cell with more than three live neighbours dies, as if by overcrowding.</li>
+          <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+        </ul>  
         </div>
       </div>
     </div>
