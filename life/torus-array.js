@@ -1,8 +1,22 @@
 (function(exports){
     
-    function TorusArray(width, height, initValue) {
+    function TorusArray(width, height, initializer) {
         /*
         Implements naive torus array.
+
+        You can pass initializer as a value or a function
+        which accepts index in two-dimensional array (i, j)
+        and should return a single value for that cell.
+
+        Usage:
+        new TorusArray(2, 2) -> [[0, 0], [0, 0]]
+        new TorusArray(2, 2, 10) -> [[10, 10], [10, 10]]
+        new TorusArray(2, 2, function(i, j) {
+            return i * 10 + j;
+        }) -> [[0, 1], [10, 11]]
+        new TorusArray(2, 2, function(i, j) {
+            return Math.round(Math.random());
+        }) -> [[1, 0], [1, 1]]
 
         Instance has following functions:
             * get(row, column)
@@ -17,14 +31,30 @@
 
         this.width = width;
         this.height = height;
-        initValue = initValue || 0;
+        
+        if(initializer === undefined) {
+            // default initializer is zero for all cells
+            initializer = function(i, j) { 
+                return 0; 
+            }
+        }
+        else {
+            if(!(initializer instanceof Function)) {
+                // if initializer is not a function, but value,
+                // create a function to return that value
+                var initValue = initializer;
+                initializer = function(i, j) { 
+                    return initValue;
+                }
+            }
+        }
         
         function initGrid(width, height) {
             var grid = [];
             for(var i = 0; i < height; i++) {
                 grid[i] = [];
                 for(var j = 0; j < width; j++) {
-                    grid[i][j] = initValue;
+                    grid[i][j] = initializer(i, j);
                 };
             };
             return grid;
