@@ -114,6 +114,7 @@
   };
 
   function stepEvolution(currentTorus) {
+    console.log("step evolution", generation);
     var start_time = performance.now();
     var cells_alive = 0;
     var nextTorus = new TorusArray(currentTorus.width, currentTorus.height);
@@ -132,7 +133,6 @@
         if(currentTorus.get(i, j) == 0 && population == 3) {
           nextTorus.set(i, j, 1);
           cells_alive++;
-          console.log("new life", i, j, "cells", cells_alive);
         }
         
         if(currentTorus.get(i, j) == 1) {
@@ -145,7 +145,6 @@
             // если у живой клетки есть две или три живые соседки, то эта клетка 
             // продолжает жить;
             nextTorus.set(i, j, 1);
-            console.log("still alive", i, j, "cells", cells_alive);
             cells_alive++;
           }
         }
@@ -165,26 +164,41 @@
     return nextTorus;
   };
 
+
+  // globals
   TorusArray = modules.TorusArray;
 
   var w = 35,
       h = 25,
-      generation = 0;
+      generation = 0,
+      gameTimer = 0;
 
   lifeTorus = new TorusArray(w, h);
-  lifeTorus.set(5, 3, 1);
-  lifeTorus.set(5, 4, 1);
-  lifeTorus.set(5, 5, 1);
-  lifeTorus.set(4, 5, 1);
-  lifeTorus.set(3, 4, 1);
+
+  // GLIDER
+  // lifeTorus.set(5, 3, 1);
+  // lifeTorus.set(5, 4, 1);
+  // lifeTorus.set(5, 5, 1);
+  // lifeTorus.set(4, 5, 1);
+  // lifeTorus.set(3, 4, 1);
+
+  
   
 
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
 
+
   d3.select('#id_start_btn').on('click', function() {
-    lifeTorus = stepEvolution(lifeTorus);
-    updateGrid(lifeTorus);
+    clearTimeout(gameTimer);
+    gameTimer = setInterval(function() {
+      lifeTorus = stepEvolution(lifeTorus);
+      updateGrid(lifeTorus);
+    }, 100);
+  });
+
+  d3.select('#id_stop_btn').on('click', function() {
+    clearTimeout(gameTimer);
   });
 
 })();

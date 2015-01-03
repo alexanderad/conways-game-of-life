@@ -17,3 +17,7 @@
 .stats-container .code {
     font-family: monospace;
 }
+
+.field-presets a {
+    text-decoration: underline;
+}
