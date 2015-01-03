@@ -13,3 +13,7 @@
 .stats-container .right {
     text-align: right;
 }
+
+.stats-container .code {
+    font-family: monospace;
+}

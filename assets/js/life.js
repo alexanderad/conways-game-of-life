@@ -1,8 +1,24 @@
 (function(){
 
+    window.performance = (window.performance || {
+        offset: Date.now(),
+        now: function now(){
+            return Date.now() - this.offset;
+        }
+    });
+
+  $(document).on('evolutionStepFinished', {}, function(
+      event, time_taken, generation, cells_alive) {
+      $('#id_stats_step_evolution_ms').text(time_taken.toFixed(0));
+      $('#id_stats_generation').text(generation);
+      $('#id_stats_cells_alive').text(cells_alive);
+  });
+
+  $(document).on('updateGridFinished', {}, function(event, time_taken) {
+      $('#id_stats_render_grid_ms').text(time_taken.toFixed(0));
+  });
+
   function initGrid(torus) {
-    console.log("[i] initializing grid with torus array", torus);
-  
     // field configuration
     var itemSize = 15,
         cellSize = itemSize - 1,
@@ -58,7 +74,6 @@
   };
 
   function colorizeGrid() {
-    console.log('[i] colorizing grid');
     var svg = d3.select('[role="fieldmap"]');
     var items = svg.selectAll('rect')
       .transition()
@@ -80,7 +95,7 @@
   };
 
   function updateGrid(torus) {
-    console.log('[i] updating grid')
+    var start_time = performance.now();
     var grid = torus.toArray();
     var gridItems = d3.merge(grid);
 
@@ -91,12 +106,19 @@
         return d;
       });
     colorizeGrid();
+
+    // metrics
+    var end_time = performance.now();
+    $(document).trigger('updateGridFinished', [end_time - start_time]);
+
   };
 
   function stepEvolution(currentTorus) {
+    var start_time = performance.now();
+    var cells_alive = 0;
     var nextTorus = new TorusArray(currentTorus.width, currentTorus.height);
-    for(var i = 0; i < currentTorus.width; i++) {
-      for(var j = 0; j < currentTorus.height; j++) {
+    for(var i = 0; i < currentTorus.height; i++) {
+      for(var j = 0; j < currentTorus.width; j++) {
         var neighbors = currentTorus.neighbors(i, j).map(function(currValue) {
           return currentTorus.get(currValue[0], currValue[1]);
         });
@@ -109,29 +131,45 @@
         // зарождается жизнь;
         if(currentTorus.get(i, j) == 0 && population == 3) {
           nextTorus.set(i, j, 1);
+          cells_alive++;
+          console.log("new life", i, j, "cells", cells_alive);
         }
         
         if(currentTorus.get(i, j) == 1) {
           if(population < 2 || population > 3) {
             // если соседей меньше двух или больше трёх) клетка умирает 
             // («от одиночества» или «от перенаселённости»)
-            nextTorus.set(i, j, 0);  
+            nextTorus.set(i, j, 0);
           }
           else {
             // если у живой клетки есть две или три живые соседки, то эта клетка 
             // продолжает жить;
             nextTorus.set(i, j, 1);
+            console.log("still alive", i, j, "cells", cells_alive);
+            cells_alive++;
           }
         }
       };
     };
+
+    // metrics
+    var end_time = performance.now()
+    generation++;
+    $(document).trigger('evolutionStepFinished', [
+      end_time - start_time,
+      generation,
+      cells_alive
+    ]);
+    
+
     return nextTorus;
   };
 
   TorusArray = modules.TorusArray;
 
   var w = 35,
-      h = 25;
+      h = 25,
+      generation = 0;
 
   lifeTorus = new TorusArray(w, h);
   lifeTorus.set(5, 3, 1);
@@ -145,7 +183,6 @@
   updateGrid(lifeTorus);
 
   d3.select('#id_start_btn').on('click', function() {
-    console.log("green btn click");
     lifeTorus = stepEvolution(lifeTorus);
     updateGrid(lifeTorus);
   });
