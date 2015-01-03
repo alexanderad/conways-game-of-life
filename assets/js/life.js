@@ -1,21 +1,14 @@
 (function(){
 
-    window.performance = (window.performance || {
-        offset: Date.now(),
-        now: function now(){
-            return Date.now() - this.offset;
-        }
-    });
-
-  $(document).on('evolutionStepFinished', {}, function(
-      event, time_taken, generation, cells_alive) {
-      $('#id_stats_step_evolution_ms').text(time_taken.toFixed(0));
+  $(document).on('evolutionStepFinished', {}, function(event,
+    timeTaken, generation, cellsAlive) {
+      $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
       $('#id_stats_generation').text(generation);
-      $('#id_stats_cells_alive').text(cells_alive);
+      $('#id_stats_cells_alive').text(cellsAlive);
   });
 
-  $(document).on('updateGridFinished', {}, function(event, time_taken) {
-      $('#id_stats_render_grid_ms').text(time_taken.toFixed(0));
+  $(document).on('updateGridFinished', {}, function(event, timeTaken) {
+      $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
   });
 
   function initGrid(torus) {
@@ -83,10 +76,10 @@
       var row = Math.floor(i / lifeTorus.width);
       var col = i % lifeTorus.width;
 
-      var current_value = lifeTorus.get(row, col);
-      var new_value = current_value == 1 ? 0 : 1;
-      rect.attr('fill', new_value == 1 ? '#000' : '#fff');
-      lifeTorus.set(row, col, new_value);
+      var currentValue = lifeTorus.get(row, col);
+      var newValue = currentValue == 1 ? 0 : 1;
+      rect.attr('fill', newValue == 1 ? '#000' : '#fff');
+      lifeTorus.set(row, col, newValue);
   };
 
   function colorizeGrid() {
@@ -99,19 +92,18 @@
       // })
       .duration(150)
       .attr('fill', function(d) {
-        return d == 1 ? '#000' : '#fff';
+       return d == 1 ? '#000' : '#fff';
       });
       // .attrTween('fill', function(d, i, a) {
       //     return d3.interpolate(
-      //       '#fff',
-      //       d == 1 ? '#fff' : '#000',
-      //       //d == 1 ? '#000' : '#fff'
+      //       d == 1 ? 'green' : 'red',
+      //       d == 1 ? '#000' : '#fff'
       //     );
       // });
   };
 
   function updateGrid(torus) {
-    var start_time = performance.now();
+    var startTime = performance.now();
     var grid = torus.toArray();
     var gridItems = d3.merge(grid);
 
@@ -124,15 +116,14 @@
     colorizeGrid();
 
     // metrics
-    var end_time = performance.now();
-    $(document).trigger('updateGridFinished', [end_time - start_time]);
+    var endTime = performance.now();
+    $(document).trigger('updateGridFinished', [endTime - startTime]);
 
   };
 
   function stepEvolution(currentTorus) {
-    console.log("step evolution", generation);
-    var start_time = performance.now();
-    var cells_alive = 0;
+    var startTime = performance.now();
+    var cellsAlive = 0;
     var nextTorus = new TorusArray(currentTorus.width, currentTorus.height);
     for(var i = 0; i < currentTorus.height; i++) {
       for(var j = 0; j < currentTorus.width; j++) {
@@ -148,7 +139,7 @@
         // зарождается жизнь;
         if(currentTorus.get(i, j) == 0 && population == 3) {
           nextTorus.set(i, j, 1);
-          cells_alive++;
+          cellsAlive++;
         }
         
         if(currentTorus.get(i, j) == 1) {
@@ -161,19 +152,19 @@
             // если у живой клетки есть две или три живые соседки, то эта клетка 
             // продолжает жить;
             nextTorus.set(i, j, 1);
-            cells_alive++;
+            cellsAlive++;
           }
         }
       };
     };
 
     // metrics
-    var end_time = performance.now()
+    var endTime = performance.now()
     generation++;
     $(document).trigger('evolutionStepFinished', [
-      end_time - start_time,
+      endTime - startTime,
       generation,
-      cells_alive
+      cellsAlive
     ]);
     
 
@@ -189,17 +180,7 @@
       generation = 0,
       gameTimer = 0;
 
-  lifeTorus = new TorusArray(w, h);
-
-  // GLIDER
-  // lifeTorus.set(5, 3, 1);
-  // lifeTorus.set(5, 4, 1);
-  // lifeTorus.set(5, 5, 1);
-  // lifeTorus.set(4, 5, 1);
-  // lifeTorus.set(3, 4, 1);
-
-
-  
+  lifeTorus = new TorusArray(w, h);  
 
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
