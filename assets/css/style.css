@@ -18,6 +18,6 @@
     font-family: monospace;
 }
 
-.field-presets a {
-    text-decoration: underline;
+.dropdown-menu a {
+    text-decoration: none;
 }
