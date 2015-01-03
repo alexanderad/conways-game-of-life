@@ -204,17 +204,24 @@
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
 
+  $('#id_toggle_btn').click(function() {
+    var btn = $('#id_toggle_btn');
+    var btn_span = $('#id_toggle_btn > span');
+    if(btn.hasClass('btn-success')) {
+      gameTimer = setInterval(function() {
+        lifeTorus = stepEvolution(lifeTorus);
+        updateGrid(lifeTorus);
+      }, 100);
 
-  d3.select('#id_start_btn').on('click', function() {
-    clearTimeout(gameTimer);
-    gameTimer = setInterval(function() {
-      lifeTorus = stepEvolution(lifeTorus);
-      updateGrid(lifeTorus);
-    }, 100);
-  });
-
-  d3.select('#id_stop_btn').on('click', function() {
-    clearTimeout(gameTimer);
+      btn.removeClass('btn-success').addClass('btn-warning');
+      btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
+    }
+    else {
+      clearTimeout(gameTimer);
+      
+      btn.removeClass('btn-warning').addClass('btn-success');
+      btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
+    };
   });
 
 })();
