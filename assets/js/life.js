@@ -71,6 +71,18 @@
       .attr('x', function(d, i){
         return itemSize * i;
       });
+
+    all_rects = svg.selectAll('rect');
+    all_rects.on('click', function(d, i) {
+      var rect = d3.select(all_rects[0][i]);
+      var row = Math.floor(i / torus.width);
+      var col = i % torus.width;
+
+      var new_value = d == 0 ? 1 : 0;
+      rect.attr('data-value', new_value);
+      torus.set(row, col, new_value);
+      all_rects[0][i] = new_value;
+    });
   };
 
   function colorizeGrid() {
@@ -182,7 +194,7 @@
   // lifeTorus.set(4, 5, 1);
   // lifeTorus.set(3, 4, 1);
 
-  
+
   
 
   initGrid(lifeTorus);

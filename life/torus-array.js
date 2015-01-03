@@ -86,6 +86,21 @@
         this.grid[index[0]][index[1]] = value;
     };
 
+    TorusArray.prototype.setArray = function(arr) {
+        if((arr.length != this.height) || (arr[0].length != this.width)) {
+            console.log(
+                "Input array does not correspondTorusArray width / height"
+            );
+        }
+        else {
+            this.grid = arr;
+        }
+    };
+
+    TorusArray.prototype.toArray = function() {
+        return this.grid;
+    };
+
     TorusArray.prototype.neighbors = function(i, j) {
         var index = this.normalizeIndex(i, j);
         var neighborsIndexes = [
@@ -104,10 +119,6 @@
             )
         }
         return neighbors;
-    };
-
-    TorusArray.prototype.toArray = function() {
-        return this.grid;
     };
 
     exports.TorusArray = TorusArray;
