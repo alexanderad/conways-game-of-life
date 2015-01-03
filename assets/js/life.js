@@ -74,15 +74,19 @@
 
     all_rects = svg.selectAll('rect');
     all_rects.on('click', function(d, i) {
-      var rect = d3.select(all_rects[0][i]);
-      var row = Math.floor(i / torus.width);
-      var col = i % torus.width;
-
-      var new_value = d == 0 ? 1 : 0;
-      rect.attr('data-value', new_value);
-      torus.set(row, col, new_value);
-      all_rects[0][i] = new_value;
+      rect = d3.select(all_rects[0][i])
+      toggleCell(rect, i);
     });
+  };
+
+  function toggleCell(rect, i) {
+      var row = Math.floor(i / lifeTorus.width);
+      var col = i % lifeTorus.width;
+
+      var current_value = lifeTorus.get(row, col);
+      var new_value = current_value == 1 ? 0 : 1;
+      rect.attr('fill', new_value == 1 ? '#000' : '#fff');
+      lifeTorus.set(row, col, new_value);
   };
 
   function colorizeGrid() {
