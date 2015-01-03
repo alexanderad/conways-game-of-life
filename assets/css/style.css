@@ -1,7 +1,15 @@
-.field-container {
-    padding-top: 20px;
+.field-container, .controls-container {
+    
 }
 
 .main {
-    padding-top: 70px;
+    margin: 20px;
+}
+
+.stats-container .bold {
+    font-weight: bold;
+}
+
+.stats-container .right {
+    text-align: right;
 }
