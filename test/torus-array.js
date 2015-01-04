@@ -50,12 +50,10 @@ describe('TorusArray', function () {
 
             assert.deepEqual(
                 compressed,
-                [
-                    [1, 2, 0, 1, 1, 1, 0, 1],    
-                    [0, 5],
-                    [0, 5],
-                    [0, 5],
-                ]
+                [ [1, 2, 0, 1, 1, 1, 0, 1],    
+                  [0, 5],
+                  [0, 5],
+                  [0, 5] ]
             );
         });
         it('decompresses', function() {
@@ -63,11 +61,17 @@ describe('TorusArray', function () {
                 [1, 2, 0, 1, 1, 1, 0, 1],    
                 [0, 5],
                 [0, 5],
-                [0, 5],
+                [0, 2, 1, 2, 0, 1],
             ];
 
-            
-
+            var decompressed = TorusArray.decompress(compressed);
+            assert.deepEqual(
+                decompressed,
+                [ [1, 1, 0, 1, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0],
+                  [0, 0, 1, 1, 0] ]
+            )
         });
     });
 });

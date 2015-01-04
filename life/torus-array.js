@@ -16,16 +16,16 @@
         and should return a single value for that cell.
 
         Usage:
-        new TorusArray(2, 2) -> [[0, 0], [0, 0]]
-        new TorusArray(2, 2, 10) -> [[10, 10], [10, 10]]
-        new TorusArray(2, 2, function(i, j) {
-            return i * 10 + j;
-        }) -> [[0, 1], [10, 11]]
-        new TorusArray(2, 2, function(i, j) {
-            return Math.round(Math.random());
-        }) -> [[1, 0], [1, 1]]
+            new TorusArray(2, 2) -> [[0, 0], [0, 0]]
+            new TorusArray(2, 2, 10) -> [[10, 10], [10, 10]]
+            new TorusArray(2, 2, function(i, j) {
+                return i * 10 + j;
+            }) -> [[0, 1], [10, 11]]
+            new TorusArray(2, 2, function(i, j) {
+                return Math.round(Math.random());
+            }) -> [[1, 0], [1, 1]]
 
-        Instance has following functions:
+        Instance has following methods:
             * get(row, column)
             * set(row, column, value)
             * normalizeIndex(row, column)
@@ -33,9 +33,10 @@
             * toArray()
             * setArray(newArray)
             * compress()
+            
+        Class additionally provides:
             * decompress(compressedTorusArray)
 
-        
         Functions get, set and normalizeIndex support both 
         positive and negative indexing.
         */
@@ -148,7 +149,7 @@
         return compressed;
     };
 
-    TorusArray.prototype.decompress = function(compressedArray) {
+    TorusArray.decompress = function(compressedArray) {
         function decompressRow(row) {
             if(row.length == 0) {
                 return row;
