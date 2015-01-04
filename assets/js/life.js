@@ -16,27 +16,61 @@
     var itemSize = 15,
         cellSize = itemSize - 1,
         margin = {
-          top: 4,
-          left: 4,
+          top: 20,
+          left: 20,
           right: 4,
           bottom: 4
         };
+
+    var yAxisScale = d3.scale.linear()
+          .range([0, itemSize * (torus.height - 1)])
+          .domain([1, torus.height]),
+        yAxis = d3.svg.axis()
+          .orient('left')
+          .ticks(torus.height)
+          .scale(yAxisScale);
+
+    var xAxisScale = d3.scale.linear()
+          .range([0, itemSize * (torus.width - 1)])
+          .domain([1, torus.width]),
+        xAxis = d3.svg.axis()
+          .orient('top')
+          .ticks(torus.width)
+          .scale(xAxisScale);
 
     var width = (torus.width * itemSize) + margin.right + margin.left;
     var height = (torus.height * itemSize) + margin.top + margin.bottom;
 
     var svg = d3.select('[role="fieldmap"]');
 
+    // Y axis
+    svg.append('g')
+      .attr('transform', 
+            'translate('+ (margin.left + 5 ) + ',' + (margin.top + cellSize / 2) + ')')
+      .attr('class', 'axis')
+      .call(yAxis);
+
+    // X axis
+    svg.append('g')
+      .attr('transform', 
+            'translate('+ (margin.left + cellSize / 2 ) + ',' + (margin.top + 5) + ')')
+      .attr('class', 'axis')
+      .call(xAxis);
+
+    svg.append('rect') // this is background for all cells
+      .attr('transform', 
+            'translate(' + (margin.left - 1) + ',' + (margin.top - 1) + ')')
+      .attr('width', width - margin.left - margin.right + 1)
+      .attr('height', height - margin.top - margin.bottom + 1)
+      .attr('fill', '#ccc');
+
     var fieldmap = svg
       .attr('width',  width)
       .attr('height', height)
-      .style('background-color', '#ccc')
-      .append('g')
-      .attr('width', width - margin.left - margin.right)
-      .attr('height', height - margin.top - margin.bottom)
-      .attr('fill', '#fff')
+      .append('g') // group for all cells
+      .attr('role', 'field')
       .attr('transform', 
-            'translate(' + margin.left + ',' + margin.top + ')');
+            'translate(' + (margin.left) + ',' + (margin.top) + ')');
 
     var grid = torus.toArray();
     
@@ -55,6 +89,7 @@
       .data(function(d) { return d; })
       .enter()
       .append('rect')
+      .attr('type', 'cell')
       .attr('width', cellSize)
       .attr('height', cellSize)
       .attr('fill', '#ffffff')
@@ -65,9 +100,10 @@
         return itemSize * i;
       });
 
-    all_rects = svg.selectAll('rect');
-    all_rects.on('click', function(d, i) {
-      rect = d3.select(all_rects[0][i])
+    cells = svg.selectAll('rect[type="cell"]');
+    // console.log(cells);
+    cells.on('click', function(d, i) {
+      rect = d3.select(cells[0][i])
       toggleCell(rect, i);
     });
   };
@@ -84,7 +120,7 @@
 
   function colorizeGrid() {
     var svg = d3.select('[role="fieldmap"]');
-    var items = svg.selectAll('rect')
+    var items = svg.selectAll('rect[type="cell"]')
       .transition()
       // .delay(function(d, i) {
       //   var duration = 100;
@@ -108,7 +144,7 @@
     var gridItems = d3.merge(grid);
 
     var svg = d3.select('[role="fieldmap"]');
-    var items = svg.selectAll('rect')
+    var items = svg.selectAll('rect[type="cell"]')
       .data(gridItems)
       .attr('data-value', function(d) {
         return d;
@@ -194,13 +230,13 @@
         updateGrid(lifeTorus);
       }, 100);
 
-      btn.removeClass('btn-success').addClass('btn-warning');
+      btn.removeClass('btn-success').addClass('btn-danger');
       btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
     }
     else {
       clearTimeout(gameTimer);
       
-      btn.removeClass('btn-warning').addClass('btn-success');
+      btn.removeClass('btn-danger').addClass('btn-success');
       btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
     };
   });

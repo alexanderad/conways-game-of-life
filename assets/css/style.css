@@ -21,3 +21,16 @@
 .dropdown-menu a {
     text-decoration: none;
 }
+
+.fieldmap .axis path {
+    display: none;
+}
+.fieldmap .axis line {
+    display: none;
+    /*fill: none;*/
+    /*stroke: #000;*/
+    /*shape-rendering: crispEdges;*/
+}
+.fieldmap .axis text {
+    font-size: 9px
+}
