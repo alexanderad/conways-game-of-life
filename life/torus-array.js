@@ -7,12 +7,12 @@
         };
     };
     
-    function TorusArray(width, height, initializer) {
+    function TorusArray(rows, cols, initializer) {
         /*
         Implements naive torus array.
 
         You can pass initializer as a value or a function
-        which accepts index in two-dimensional array (i, j)
+        which accepts index in two-dimensional array (row, col)
         and should return a single value for that cell.
 
         Usage:
@@ -21,14 +21,14 @@
             new TorusArray(2, 2, function(i, j) {
                 return i * 10 + j;
             }) -> [[0, 1], [10, 11]]
-            new TorusArray(2, 2, function(i, j) {
+            new TorusArray(2, 2, function(row, col) {
                 return Math.round(Math.random());
             }) -> [[1, 0], [1, 1]]
 
         Instance has following methods:
-            * get(row, column)
-            * set(row, column, value)
-            * normalizeIndex(row, column)
+            * get(row, col)
+            * set(row, col, value)
+            * normalizeIndex(row, col)
             * print()
             * toArray()
             * setArray(newArray)
@@ -40,13 +40,12 @@
         Functions get, set and normalizeIndex support both 
         positive and negative indexing.
         */
-
-        this.width = width;
-        this.height = height;
+        this.rows = rows;
+        this.cols = cols;
         
         if(initializer === undefined) {
             // default initializer is zero for all cells
-            initializer = function(i, j) { 
+            initializer = function(row, col) { 
                 return 0; 
             }
         }
@@ -55,53 +54,53 @@
                 // if initializer is not a function, but value,
                 // create a function to return that value
                 var initValue = initializer;
-                initializer = function(i, j) { 
+                initializer = function(row, col) { 
                     return initValue;
                 }
             }
         }
         
-        function initGrid(width, height) {
+        function initGrid(rows, cols) {
             var initialGrid = [];
-            for(var i = 0; i < height; i++) {
+            for(var i = 0; i < rows; i++) {
                 initialGrid[i] = [];
-                for(var j = 0; j < width; j++) {
+                for(var j = 0; j < cols; j++) {
                     initialGrid[i][j] = initializer(i, j);
                 };
             };
             return initialGrid;
         };
 
-        this.grid = initGrid(width, height);
+        this.grid = initGrid(rows, cols);
     };
 
-    TorusArray.prototype.normalizeIndex = function(i, j) {
+    TorusArray.prototype.normalizeIndex = function(row, col) {
         return [
-            (this.height + i) % this.height, 
-            (this.width + j) % this.width
+            (this.rows + row) % this.rows, 
+            (this.cols + col) % this.cols
         ];
     };
 
     TorusArray.prototype.print = function() {
-        for(var i = 0; i < this.height; i++) {    
+        for(var i = 0; i < this.rows; i++) {    
             console.log(this.grid[i]);
         };
     };
 
-    TorusArray.prototype.get = function(i, j) {
-        var index = this.normalizeIndex(i, j);
+    TorusArray.prototype.get = function(row, col) {
+        var index = this.normalizeIndex(row, col);
         return this.grid[index[0]][index[1]];
     };
 
-    TorusArray.prototype.set = function(i, j, value) {
-        var index = this.normalizeIndex(i, j);
+    TorusArray.prototype.set = function(row, col, value) {
+        var index = this.normalizeIndex(row, col);
         this.grid[index[0]][index[1]] = value;
     };
 
     TorusArray.prototype.setArray = function(arr) {
-        if((arr.length != this.height) || (arr[0].length != this.width)) {
+        if((arr.length != this.rows) || (arr[0].length != this.cols)) {
             console.log(
-                "Input array does not correspondTorusArray width / height"
+                "Input array does not correspond TorusArray cols / rows"
             );
         }
         else {
@@ -139,7 +138,7 @@
         var originalSize = this.toArray().toString().length;
         var compressed = [];
         
-        for(var i = 0; i < this.height; i++) {
+        for(var i = 0; i < this.rows; i++) {
             compressed.push(compressRow(this.grid[i]));
         };
         
@@ -171,8 +170,8 @@
         return decompressed;
     };
 
-    TorusArray.prototype.neighbors = function(i, j) {
-        var index = this.normalizeIndex(i, j);
+    TorusArray.prototype.neighbors = function(row, col) {
+        var index = this.normalizeIndex(row, col);
         var neighborsIndexes = [
             [-1, -1], [0, -1], [1, -1],
             [-1, 0], [1, 0],

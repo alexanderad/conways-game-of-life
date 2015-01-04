@@ -4,9 +4,9 @@ var assert = require('chai').assert,
 describe('TorusArray', function () {
     describe('public and private properties', function () {
         it('width and height are public', function () {
-            var ta = new TorusArray(5, 10);
-            assert.equal(ta.width, 5);
-            assert.equal(ta.height, 10);
+            var ta = new TorusArray(10, 5);
+            assert.equal(ta.rows, 10);
+            assert.equal(ta.cols, 5);
         });
     });
     
@@ -42,7 +42,7 @@ describe('TorusArray', function () {
 
     describe('compressor', function() {
         it('compresses', function() {
-            var ta = new TorusArray(5, 4);
+            var ta = new TorusArray(4, 5);
             ta.set(0, 0, 1);
             ta.set(0, 1, 1);
             ta.set(0, 3, 1);
