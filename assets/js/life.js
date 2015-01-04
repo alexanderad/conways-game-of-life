@@ -23,23 +23,23 @@
         };
 
     var yAxisScale = d3.scale.linear()
-          .range([0, itemSize * (torus.height - 1)])
-          .domain([1, torus.height]),
+          .range([0, itemSize * (torus.rows - 1)])
+          .domain([1, torus.rows]),
         yAxis = d3.svg.axis()
           .orient('left')
-          .ticks(torus.height)
+          .ticks(torus.rows)
           .scale(yAxisScale);
 
     var xAxisScale = d3.scale.linear()
-          .range([0, itemSize * (torus.width - 1)])
-          .domain([1, torus.width]),
+          .range([0, itemSize * (torus.cols - 1)])
+          .domain([1, torus.cols]),
         xAxis = d3.svg.axis()
           .orient('top')
-          .ticks(torus.width)
+          .ticks(torus.cols)
           .scale(xAxisScale);
 
-    var width = (torus.width * itemSize) + margin.right + margin.left;
-    var height = (torus.height * itemSize) + margin.top + margin.bottom;
+    var width = (torus.cols * itemSize) + margin.right + margin.left;
+    var height = (torus.rows * itemSize) + margin.top + margin.bottom;
 
     var svg = d3.select('[role="fieldmap"]');
 
@@ -109,8 +109,8 @@
   };
 
   function toggleCell(rect, i) {
-      var row = Math.floor(i / lifeTorus.width);
-      var col = i % lifeTorus.width;
+      var row = Math.floor(i / lifeTorus.cols);
+      var col = i % lifeTorus.cols;
 
       var currentValue = lifeTorus.get(row, col);
       var newValue = currentValue == 1 ? 0 : 1;
@@ -122,20 +122,10 @@
     var svg = d3.select('[role="fieldmap"]');
     var items = svg.selectAll('rect[type="cell"]')
       .transition()
-      // .delay(function(d, i) {
-      //   var duration = 100;
-      //   return i / 100 * duration;
-      // })
       .duration(150)
       .attr('fill', function(d) {
        return d == 1 ? '#000' : '#fff';
       });
-      // .attrTween('fill', function(d, i, a) {
-      //     return d3.interpolate(
-      //       d == 1 ? 'green' : 'red',
-      //       d == 1 ? '#000' : '#fff'
-      //     );
-      // });
   };
 
   function updateGrid(torus) {
@@ -160,9 +150,9 @@
   function stepEvolution(currentTorus) {
     var startTime = performance.now();
     var cellsAlive = 0;
-    var nextTorus = new TorusArray(currentTorus.width, currentTorus.height);
-    for(var i = 0; i < currentTorus.height; i++) {
-      for(var j = 0; j < currentTorus.width; j++) {
+    var nextTorus = new TorusArray(currentTorus.rows, currentTorus.cols);
+    for(var i = 0; i < currentTorus.rows; i++) {
+      for(var j = 0; j < currentTorus.cols; j++) {
         var neighbors = currentTorus.neighbors(i, j).map(function(currValue) {
           return currentTorus.get(currValue[0], currValue[1]);
         });
@@ -211,12 +201,12 @@
   // globals
   TorusArray = modules.TorusArray;
 
-  var w = 35,
-      h = 25,
+  var rows = 25,
+      cols = 35,
       generation = 0,
       gameTimer = 0;
 
-  lifeTorus = new TorusArray(w, h);  
+  lifeTorus = new TorusArray(rows, cols);  
 
   initGrid(lifeTorus);
   updateGrid(lifeTorus);
