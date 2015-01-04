@@ -8,11 +8,8 @@ describe('TorusArray', function () {
             assert.equal(ta.width, 5);
             assert.equal(ta.height, 10);
         });
-        it('grid is private', function () {
-            var ta = new TorusArray(5, 10);
-            assert.isUndefined(ta.grid);
-        });
     });
+    
     describe('public methods', function () {
         it('simple set()', function() {
             var ta = new TorusArray(2, 2);
@@ -40,6 +37,37 @@ describe('TorusArray', function () {
 
             assert.equal(ta.get(0, 5), 7);
             assert.equal(ta.get(0, 2), 7);  
+        });
+    });
+
+    describe('compressor', function() {
+        it('compresses', function() {
+            var ta = new TorusArray(5, 4);
+            ta.set(0, 0, 1);
+            ta.set(0, 1, 1);
+            ta.set(0, 3, 1);
+            var compressed = ta.compress();
+
+            assert.deepEqual(
+                compressed,
+                [
+                    [1, 2, 0, 1, 1, 1, 0, 1],    
+                    [0, 5],
+                    [0, 5],
+                    [0, 5],
+                ]
+            );
+        });
+        it('decompresses', function() {
+            var compressed = [
+                [1, 2, 0, 1, 1, 1, 0, 1],    
+                [0, 5],
+                [0, 5],
+                [0, 5],
+            ];
+
+            
+
         });
     });
 });

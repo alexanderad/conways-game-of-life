@@ -1,5 +1,12 @@
 (function(exports){
     
+    Array.prototype.extendWith = function(extendWith, times) {
+        var times = times || 1;
+        for(var i = 0; i < times; i++) {
+            this.push(extendWith);
+        };
+    };
+    
     function TorusArray(width, height, initializer) {
         /*
         Implements naive torus array.
@@ -24,6 +31,10 @@
             * normalizeIndex(row, column)
             * print()
             * toArray()
+            * setArray(newArray)
+            * compress()
+            * decompress(compressedTorusArray)
+
         
         Functions get, set and normalizeIndex support both 
         positive and negative indexing.
@@ -99,6 +110,64 @@
 
     TorusArray.prototype.toArray = function() {
         return this.grid;
+    };
+
+    TorusArray.prototype.compress = function() {
+        function compressRow(row) {
+            if(row.length == 0) {
+                return row;
+            }
+
+            var compressedRow = [];
+            var character = row[0],
+                count = 1;
+            for(var j = 1; j < row.length; j++) {
+                if(row[j] != character) {
+                    compressedRow.push(character, count);
+                    character = row[j];
+                    count = 1;
+                }
+                else {
+                    count++;
+                }
+            }
+            compressedRow.push(character, count);
+            return compressedRow;
+        };
+
+        var originalSize = this.toArray().toString().length;
+        var compressed = [];
+        
+        for(var i = 0; i < this.height; i++) {
+            compressed.push(compressRow(this.grid[i]));
+        };
+        
+        var compressedSize = compressed.toString().length;
+        console.log("compression ratio:", 
+                    (originalSize / compressedSize).toFixed(2))
+        return compressed;
+    };
+
+    TorusArray.prototype.decompress = function(compressedArray) {
+        function decompressRow(row) {
+            if(row.length == 0) {
+                return row;
+            }
+
+            var decompressedRow = [];
+            for(var j = 0; j < row.length; j += 2) {
+                var character = row[j],
+                    count = row[j + 1];
+                decompressedRow.extendWith(character, count);
+            };
+            return decompressedRow;
+        };
+
+        var decompressed = [];
+        for(var i = 0; i < compressedArray.length; i++) {
+            decompressed.push(decompressRow(compressedArray[i]));
+        };
+        return decompressed;
     };
 
     TorusArray.prototype.neighbors = function(i, j) {
