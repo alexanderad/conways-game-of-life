@@ -74,4 +74,68 @@ describe('TorusArray', function () {
             )
         });
     });
+
+    describe('zfill2d', function() {
+        it('zfills2d empty array', function() {
+            var array = [];
+            array.zfill2d(2, 2);
+            assert.deepEqual(
+                array,
+                [ [0, 0], 
+                  [0, 0] ]
+            );
+        });
+
+        it('zfills2d with arbitrary value', function() {
+            var array = [];
+            array.zfill2d(2, 2, 'hello');
+            assert.deepEqual(
+                array,
+                [ ['hello', 'hello'], 
+                  ['hello', 'hello'] ]
+            );
+        });
+
+        it('zfills2d incomplete array', function() {
+            var array = [
+                [0],
+                [1, 2]
+            ];
+            array.zfill2d(4, 3);
+            assert.deepEqual(
+                array,
+                [ [0, 0, 0], 
+                  [1, 2, 0],
+                  [0, 0, 0],
+                  [0, 0, 0] ]
+            );
+        });
+    });
+
+    describe('crop2d', function() {
+        var array = [
+            [00, 01, 02, 03],
+            [10, 11, 12, 13],
+            [20, 21, 22, 23],
+            [30, 31, 32, 33],
+            [40, 41, 42, 43],
+        ];
+        it('crops2d simple', function() {  
+            var cropped = array.crop2d(0, 0, 1, 1);
+            assert.deepEqual(
+                cropped,
+                [ [0, 1], 
+                  [10, 11] ]
+            );
+        });
+        it('still crops2d :-)', function() {  
+            var cropped = array.crop2d(1, 1, 3, 2);
+            assert.deepEqual(
+                cropped,
+                [ [11, 12], 
+                  [21, 22],
+                  [31, 32] ]
+            );
+        });
+    });
 });

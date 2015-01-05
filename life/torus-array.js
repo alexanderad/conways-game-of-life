@@ -35,6 +35,18 @@
             }
         };
     };
+
+    Array.prototype.crop2d = function(row1, col1, row2, col2) {
+        /*
+        * Crop an area identified by (row1, col1), (row2, col2) region
+        */
+        var resultArray = [];
+        var rows = this.slice(row1, row2 + 1);
+        for(var i = 0; i < rows.length; i++) {
+            resultArray.push(rows[i].slice(col1, col2 + 1));
+        };
+        return resultArray;
+    };
     
     function TorusArray(rows, cols, initializer) {
         /*
