@@ -34,3 +34,7 @@
 .fieldmap .axis text {
     font-size: 9px
 }
+
+.fieldmap rect {
+    cursor: crosshair;
+}

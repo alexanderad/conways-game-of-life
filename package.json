@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "The implementation of Conway's Game of Life using Node.js, Express.js and D3.js",
-  "main": "life.js",
+  "main": "app.js",
   "scripts": {
     "test": "mocha test"
   },

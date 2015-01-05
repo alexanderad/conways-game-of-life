@@ -8,7 +8,7 @@ This is yet another implementation of [Conway's Game of Life](http://en.wikipedi
   $ git clone https://github.com/alexanderad/conways-game-of-life.git
   $ cd conways-game-of-life
   $ npm install
-  $ node life.js
+  $ node app.js
   ```
   
 2. Navigate to [http://localhost:3000](http://localhost:3000)

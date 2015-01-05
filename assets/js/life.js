@@ -101,11 +101,19 @@
       });
 
     cells = svg.selectAll('rect[type="cell"]');
-    // console.log(cells);
     cells.on('click', function(d, i) {
       rect = d3.select(cells[0][i])
       toggleCell(rect, i);
     });
+    cells.on('mouseover', function(d, i) {
+      rect = d3.select(cells[0][i]);
+      rect.attr('opacity', .35);
+    });
+    cells.on('mouseout', function(d, i) {
+      rect = d3.select(cells[0][i]);
+      rect.attr('opacity', 1)
+    });
+
   };
 
   function toggleCell(rect, i) {
@@ -234,9 +242,8 @@
   $(".field-presets-container a").click(function(event) {
     var item = $(event.target);
     var preset = presets[item.attr('data-group')][item.attr('data-key')];
-    var presetArray = TorusArray.decompress(preset);
-    presetArray.zfill2d(lifeTorus.rows, lifeTorus.cols);
-    lifeTorus.setArray(presetArray);
+    preset.zfill2d(lifeTorus.rows, lifeTorus.cols);
+    lifeTorus.setArray(preset);
     updateGrid(lifeTorus);
   });
 
