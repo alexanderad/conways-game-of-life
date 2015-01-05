@@ -12,3 +12,4 @@
 
 ### the game
 * life in a reverse mode (evolve -> regress)
+* RLE reader
