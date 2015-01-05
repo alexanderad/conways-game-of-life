@@ -1,9 +1,38 @@
 (function(exports){
     
     Array.prototype.extendWith = function(extendWith, times) {
+        /*
+        * Extends array with `extendWith` objects, 
+        optionally `times` times.
+        */
         var times = times || 1;
         for(var i = 0; i < times; i++) {
             this.push(extendWith);
+        };
+    };
+
+    Array.prototype.zfill2d = function(rows, cols, fillValue) {
+        /*
+        * Two-dimensional array zfill (extends array to `rows` rows
+        and `cols` columns, filling with zeros or provided `fillValue`)
+        */
+        var fillValue = fillValue || 0;
+        if(this.length > rows || (this.length > 0 && this[0].length > cols)) {
+            console.log("Array is already larger than rows x cols requested");
+            return false;
+        };
+        for(var i = 0; i < this.length; i++) {
+            if(this[i].length < cols) {
+                this[i].extendWith(fillValue, cols - this[i].length);
+            }
+        };
+        if(this.length < rows) {
+            for(var i = 0; i = rows - this.length; i++) {
+                // FIXME: probably copy?
+                var zerosRow = [];
+                zerosRow.extendWith(fillValue, cols);
+                this.push(zerosRow);
+            }
         };
     };
     

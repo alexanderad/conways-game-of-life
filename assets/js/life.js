@@ -231,4 +231,10 @@
     };
   });
 
+  $(".field-presets-container a").click(function(event) {
+    var item = $(event.target);
+    var preset = presets[item.attr('data-group')][item.attr('data-key')];
+    console.log(TorusArray.decompress(preset));
+  });
+
 })();
