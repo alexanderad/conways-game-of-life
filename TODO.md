@@ -9,6 +9,7 @@
 * step controls (one step fw, rw)
 * colorize births and deaths
 * colorize "visited" cells (to show life spread)
+* "endless" or dynamic field for full browser, floating controls
 
 ### the game
 * life in a reverse mode (evolve -> regress)

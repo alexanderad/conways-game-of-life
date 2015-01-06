@@ -169,8 +169,6 @@
           return prevValue + currValue;
         });
 
-        // в пустой (мёртвой) клетке, рядом с которой ровно три живые клетки, 
-        // зарождается жизнь;
         if(currentTorus.get(i, j) == 0 && population == 3) {
           nextTorus.set(i, j, 1);
           cellsAlive++;
@@ -178,13 +176,9 @@
         
         if(currentTorus.get(i, j) == 1) {
           if(population < 2 || population > 3) {
-            // если соседей меньше двух или больше трёх) клетка умирает 
-            // («от одиночества» или «от перенаселённости»)
             nextTorus.set(i, j, 0);
           }
           else {
-            // если у живой клетки есть две или три живые соседки, то эта клетка 
-            // продолжает жить;
             nextTorus.set(i, j, 1);
             cellsAlive++;
           }
