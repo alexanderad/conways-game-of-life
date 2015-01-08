@@ -3,7 +3,7 @@ var assert = require('chai').assert,
 
 describe('RLEParser', function () {
     describe('parser', function () {
-        it('header', function () {
+        it('plain header', function () {
             var pattern = [
                 'x = 3, y = 4',
                 'bo$2bo$3o!'
@@ -12,7 +12,7 @@ describe('RLEParser', function () {
             assert.equal(parser.pattern.x, 3);
             assert.equal(parser.pattern.y, 4);
         });
-        it('header with comments', function () {
+        it('header after comments', function () {
             var pattern = [
                 '#N Gosper glider gun',
                 '#C This was the first gun discovered.',
