@@ -5,7 +5,7 @@
   "description": "The implementation of Conway's Game of Life using Node.js, Express.js and D3.js",
   "main": "app.js",
   "scripts": {
-    "test": "mocha test -g RLEParser"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
