@@ -9,9 +9,9 @@
 * does not pretend to be most effective, most universal or else.
 */
 start
- = lines+
+ = line+
 
-lines
+line
  = line:(meta_tags / header / pattern_lines) nl? { return line }
 
 /*
@@ -30,6 +30,9 @@ pattern_line
     return tag
 }
 
+pattern_single_tag
+ = normal_or_countless_tag / tagless_dead_tag
+
 pattern_tag_eol
  = "$"
 
@@ -46,8 +49,7 @@ tagless_dead_tag
    return [run_count, "b"];
 }
 
-pattern_single_tag
- = normal_or_countless_tag / tagless_dead_tag
+
 
 tag "cell tag"
  // b = a dead cell
@@ -58,7 +60,7 @@ tag "cell tag"
 * Header meta comments section
 */
 header "header line"
- = "x" _ equals _ x:int _ comma _ "y" _ equals _ y:int _ rule:(_ comma _ rule:header_rule {return rule })? {
+ = "x" _ equals _ x:int _ comma _ "y" _ equals _ y:int _ rule:header_rule? {
     return {
         "type": "header",
         "x": x,
@@ -68,7 +70,7 @@ header "header line"
 }
 
 header_rule
- = "rule" _ equals _ rule:str __ {
+ = _ comma _ "rule" _ equals _ rule:str _ {
     return rule;
 }
 
@@ -120,7 +122,7 @@ meta_top_left_coordinates "TL coordinates comment (#R, #P)"
 /*
 * Basic types
 */
-str "string"
+str "comment string"
  = characters:([^\n])+ {
     return characters.join("");
 }
@@ -131,9 +133,9 @@ int "integer"
 }
 
 signed_int "signed integer"
- = sign:[+-]* digits:digit+ {
+ = sign:[+-]? n:int {
     return parseInt(
-        sign + digits.join("")
+        sign + n
     )
 }
 
