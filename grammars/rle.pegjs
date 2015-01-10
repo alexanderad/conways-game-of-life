@@ -36,16 +36,22 @@ pattern_tag_eol
 pattern_eof
  = "!" .* // we ignore anything after "!" sign
 
-pattern_single_tag
+normal_or_countless_tag
  = run_count:int? __ tag:tag __ {
-    // b = a dead cell
-    // o = a live cell
-    return [
-        run_count || 1, tag == "b" ? 0 : 1
-    ]
+   return [run_count || 1, tag]
 }
 
+tagless_dead_tag
+ = run_count:int {
+   return [run_count, "b"];
+}
+
+pattern_single_tag
+ = normal_or_countless_tag / tagless_dead_tag
+
 tag "cell tag"
+ // b = a dead cell
+ // o = a live cell
  = [bo]
 
 /*
