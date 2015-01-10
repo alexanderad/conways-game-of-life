@@ -1,5 +1,6 @@
 /*
-* Implements grammar for PEG parser for Run Length Encoded format Life files (RLE) which are used for storing large Life patterns.
+* Implements grammar for PEG parser for Run Length Encoded format
+* Life files (RLE) which are used for storing large Life patterns.
 * RLE files are saved with a .rle file extension.
 *
 * Reference on file format can be found
@@ -7,11 +8,10 @@
 * This implementation is created keeping in mind life.js's needs and
 * does not pretend to be most effective, most universal or else.
 */
-
 start
- = call+
+ = lines+
 
-call
+lines
  = line:(meta_tags / header / pattern_lines) nl? { return line }
 
 /*
@@ -19,19 +19,16 @@ call
 */
 pattern_lines
  = pattern_lines:pattern_line+ {
- return {
-    "type": "lines",
-    "items": pattern_lines
-}
+    return {
+        "type": "lines",
+        "items": pattern_lines
+    }
 }
 
 pattern_line
- = tag:pattern_single_tag+ __ (pattern_tag_eol / pattern_eof) __ { 
-  return {
- "type": "line",
- "data": tag 
-}}
-
+ = tag:pattern_single_tag* __ (pattern_tag_eol / pattern_eof) __ {
+    return tag
+}
 
 pattern_tag_eol
  = "$"
@@ -40,33 +37,33 @@ pattern_eof
  = "!" .* // we ignore anything after "!" sign
 
 pattern_single_tag
- = run_count:int? __ tag:tag __ { 
-  return {
-    "run_count": run_count || 1,
-    "tag": tag
-  } 
+ = run_count:int? __ tag:tag __ {
+    // b = a dead cell
+    // o = a live cell
+    return [
+        run_count || 1, tag == "b" ? 0 : 1
+    ]
 }
 
 tag "cell tag"
  = [bo]
-
 
 /*
 * Header meta comments section
 */
 header "header line"
  = "x" _ equals _ x:int _ comma _ "y" _ equals _ y:int _ rule:(_ comma _ rule:header_rule {return rule })? {
-  return {
-    "type": "header",
-    "x": x,
-    "y": y,
-    "rule": rule
-  }
+    return {
+        "type": "header",
+        "x": x,
+        "y": y,
+        "rule": rule
+    }
 }
 
 header_rule
  = "rule" _ equals _ rule:str __ {
-  return rule;
+    return rule;
 }
 
 meta_tags "comment line (#)"
@@ -74,64 +71,64 @@ meta_tags "comment line (#)"
 
 meta_name "name comment (#N)"
  = "#N" _ data:str {
-  return {
-    "type": "name",
-    "value": data
-  }
-} 
+    return {
+        "type": "name",
+        "value": data
+    }
+}
 
 meta_comment "comment (#C, #c)"
  = "#"[Cc] _ data:str {
-  return {
-    "type": "comment",
-    "value": data
-  }
-} 
+    return {
+        "type": "comment",
+        "value": data
+    }
+}
 
 meta_rules "rules comment (#r)"
  = "#r" _ data:str {
-  return {
-    "type": "rules",
-    "value": data
-  }
-} 
+    return {
+        "type": "rules",
+        "value": data
+    }
+}
 
 meta_author "author comment (#O)"
  = "#O" _ data:str {
-  return {
-    "type": "author",
-    "value": data
-  }
-} 
+    return {
+        "type": "author",
+        "value": data
+    }
+}
 
 meta_top_left_coordinates "TL coordinates comment (#R, #P)"
  = "#"[RP] _ x:signed_int _ y:signed_int  {
-  return {
-    "type": "topLeftCoordinates",
-    "x": x,
-    "y": y,
-  }
-} 
+    return {
+        "type": "topLeftCoordinates",
+        "x": x,
+        "y": y,
+    }
+}
 
 
 /*
 * Basic types
 */
-str "string" 
+str "string"
  = characters:([^\n])+ {
-  return characters.join("");
+    return characters.join("");
 }
 
 int "integer"
  = digits:digit+ {
-   return parseInt(digits.join(""));
+    return parseInt(digits.join(""));
 }
 
 signed_int "signed integer"
  = sign:[+-]* digits:digit+ {
-   return parseInt(
-     sign + digits.join("")
-   );
+    return parseInt(
+        sign + digits.join("")
+    )
 }
 
 comma
@@ -143,11 +140,10 @@ equals
 digit
  = [0-9]
 
-
 /*
 * Various
 */
-nl "new line" 
+nl "new line"
  = "\n"
 
 ws "white space"
