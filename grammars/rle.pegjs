@@ -84,10 +84,10 @@ meta_name "name comment (#N)"
 }
 
 meta_comment "comment (#C, #c)"
- = "#"[Cc] _ data:str {
+ = "#"[Cc] _ data:str? {
     return {
         "type": "comment",
-        "value": data
+        "value": data || ""
     }
 }
 
