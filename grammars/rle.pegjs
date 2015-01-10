@@ -1,14 +1,37 @@
+/*
+* Implements grammar for PEG parser for Run Length Encoded format Life files (RLE) which are used for storing large Life patterns.
+* RLE files are saved with a .rle file extension.
+*
+* Reference on file format can be found
+* on LifeWiki: http://conwaylife.com/wiki/Run_Length_Encoded
+* This implementation is created keeping in mind life.js's needs and
+* does not pretend to be most effective, most universal or else.
+*/
+
 start
  = call+
 
 call
- = line:(meta_tags / header / pattern_tags) nl? { return line }
+ = line:(meta_tags / header / pattern_lines) nl? { return line }
 
 /*
 * RLE encoded pattern section
 */
-pattern_tags
- = tag:pattern_single_tag+ _ (pattern_tag_eol / pattern_eof) __ { return tag }
+pattern_lines
+ = pattern_lines:pattern_line+ {
+ return {
+    "type": "lines",
+    "items": pattern_lines
+}
+}
+
+pattern_line
+ = tag:pattern_single_tag+ __ (pattern_tag_eol / pattern_eof) __ { 
+  return {
+ "type": "line",
+ "data": tag 
+}}
+
 
 pattern_tag_eol
  = "$"
@@ -17,7 +40,7 @@ pattern_eof
  = "!" .* // we ignore anything after "!" sign
 
 pattern_single_tag
- = run_count:int? _ tag:tag _ { 
+ = run_count:int? __ tag:tag __ { 
   return {
     "run_count": run_count || 1,
     "tag": tag
@@ -32,7 +55,7 @@ tag "cell tag"
 * Header meta comments section
 */
 header "header line"
- = "x" _ equals _ x:int _ comma _ "y" _ equals _ y:int rule:(_ comma _ rule:header_rule {return rule })? {
+ = "x" _ equals _ x:int _ comma _ "y" _ equals _ y:int _ rule:(_ comma _ rule:header_rule {return rule })? {
   return {
     "type": "header",
     "x": x,
@@ -42,7 +65,7 @@ header "header line"
 }
 
 header_rule
- = "rule" _ equals _ rule:str {
+ = "rule" _ equals _ rule:str __ {
   return rule;
 }
 
@@ -134,4 +157,4 @@ _ "any number of whitespaces"
  = ws*
 
 __ "extended whitespace"
- = ws* / nl*
+ = nl* / ws*
