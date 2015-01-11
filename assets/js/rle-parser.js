@@ -1,1 +1,0 @@
-../../life/rle-parser.js
