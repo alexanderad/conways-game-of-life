@@ -12,12 +12,12 @@ app.use('/static', express.static(__dirname + '/assets'));
 // routes
 app.use('/favicon.ico', express.static(__dirname + '/assets/favicon.ico'));
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.sendFile('views/index.html', {root: __dirname});
 });
 
 // server
-var server = app.listen(3000, function() {
+var server = app.listen(3000, function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log('Listening at %s:%s...', host, port);

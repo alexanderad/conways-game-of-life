@@ -10,17 +10,22 @@
         $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
     });
 
-    function initGrid(torus) {
-        // field configuration
-        var itemSize = 15,
-            cellSize = itemSize - 1,
-            margin = {
-                top: 20,
-                left: 20,
-                right: 4,
-                bottom: 4
-            };
+    // field configuration
+    var itemSize = 25,
+        cellSize = itemSize - 1,
+        margin = {
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
+        },
+        stepTime = 100;
+    // balance number of cells / width to fill screen
+    var rows = Math.floor(window.height / itemSize);
+    var cols = Math.floor(window.width / itemSize);
 
+    function initGrid(torus) {
+        /*
         var yAxisScale = d3.scale.linear()
                 .range([0, itemSize * (torus.rows - 1)])
                 .domain([1, torus.rows]),
@@ -36,12 +41,14 @@
                 .orient('top')
                 .ticks(torus.cols)
                 .scale(xAxisScale);
+        */
 
         var width = (torus.cols * itemSize) + margin.right + margin.left;
         var height = (torus.rows * itemSize) + margin.top + margin.bottom;
 
         var svg = d3.select('[role="fieldmap"]');
 
+        /*
         // Y axis
         svg.append('g')
             .attr('transform',
@@ -55,6 +62,7 @@
                 'translate(' + (margin.left + cellSize / 2 ) + ',' + (margin.top + 5) + ')')
             .attr('class', 'axis')
             .call(xAxis);
+        */
 
         svg.append('rect') // this is background for all cells
             .attr('transform',
@@ -130,8 +138,8 @@
     function colorizeGrid() {
         var svg = d3.select('[role="fieldmap"]');
         var items = svg.selectAll('rect[type="cell"]')
-            .transition()
-            .duration(150)
+            //.transition()
+            //.duration(stepTime / 2)
             .attr('fill', function (d) {
                 return d == 1 ? '#000' : '#fff';
             });
@@ -156,36 +164,77 @@
 
     }
 
-    function stepEvolution(currentTorus) {
+    function stepEvolution(currentTorus, checkOnly) {
+        var cellsSeen = 0;
         var startTime = performance.now();
         var cellsAlive = 0;
         var nextTorus = new TorusArray(currentTorus.rows, currentTorus.cols);
-        for (var i = 0; i < currentTorus.rows; i++) {
-            for (var j = 0; j < currentTorus.cols; j++) {
-                var neighbors = currentTorus.neighbors(i, j).map(function (currValue) {
-                    return currentTorus.get(currValue[0], currValue[1]);
-                });
 
-                var population = neighbors.reduce(function (prevValue, currValue) {
-                    return prevValue + currValue;
-                });
+        var nextCheckOnly = [];
+        function markForCheck(i, j, neighbors) {
+            console.log("mark for check call");
+//            if(nextCheckOnly.indexOf([i, j]) == -1) {
+            nextCheckOnly.push([i, j]);
 
-                if (currentTorus.get(i, j) == 0 && population == 3) {
+//            }
+//            nextCheckOnly.push.apply(nextCheckOnly, neighbors);
+//            console.log("after push", nextCheckOnly.length);
+            for(var k = 0; k < neighbors.length; k++) {
+//                if(nextCheckOnly.indexOf(neighbors[k]) == -1) {
+                    nextCheckOnly.push(neighbors[k]);
+//                }
+            }
+//            console.log("marked", neighbors.length + 1);
+        }
+
+        function checkCell(i, j) {
+            var neighbors = currentTorus.neighbors(i, j);
+            var neighborsState = neighbors.map(function (currValue) {
+                return currentTorus.get(currValue[0], currValue[1]);
+            });
+
+            var population = neighborsState.reduce(function (prevValue, currValue) {
+                return prevValue + currValue;
+            });
+
+            // new born
+            if (currentTorus.get(i, j) == 0 && population == 3) {
+                nextTorus.set(i, j, 1);
+                markForCheck(i, j, neighbors);
+                cellsAlive++;
+            }
+
+            if (currentTorus.get(i, j) == 1) {
+                // loneliness or overpopulation
+                if (population < 2 || population > 3) {
+                    nextTorus.set(i, j, 0);
+                }
+                else {
+                    // lucky cell
                     nextTorus.set(i, j, 1);
+                    markForCheck(i, j, neighbors);
                     cellsAlive++;
                 }
+            }
+            cellsSeen++;
+        }
 
-                if (currentTorus.get(i, j) == 1) {
-                    if (population < 2 || population > 3) {
-                        nextTorus.set(i, j, 0);
-                    }
-                    else {
-                        nextTorus.set(i, j, 1);
-                        cellsAlive++;
-                    }
+        if(typeof checkOnly == "undefined") {
+            // scan whole field
+            for (var i = 0; i < currentTorus.rows; i++) {
+                for (var j = 0; j < currentTorus.cols; j++) {
+                    checkCell(i, j);
                 }
             }
         }
+        else {
+            // scan only marked
+            console.log("scanning", checkOnly);
+            for(var l = 0; l < checkOnly.length; l++) {
+                checkCell(checkOnly[l][0], checkOnly[l][1]);
+            }
+        }
+        console.log("cells seen", cellsSeen, "cellsAlive", cellsAlive, "next round to see", nextCheckOnly.length);
 
         // metrics
         var endTime = performance.now();
@@ -196,18 +245,18 @@
             cellsAlive
         ]);
 
-        return nextTorus;
+        console.log("next check only", nextCheckOnly.length);
+        return [nextTorus, nextCheckOnly];
     }
 
     // globals
     TorusArray = modules.TorusArray;
 
-    var rows = 25,
-        cols = 35,
-        generation = 0,
+    var generation = 0,
         gameTimer = 0;
 
     var lifeTorus = new TorusArray(rows, cols);
+    var checkOnly;
 
     initGrid(lifeTorus);
     updateGrid(lifeTorus);
@@ -216,10 +265,12 @@
         var btn = $('#id_toggle_btn');
         var btn_span = $('#id_toggle_btn > span');
         if (btn.hasClass('btn-success')) {
-            gameTimer = setInterval(function () {
-                lifeTorus = stepEvolution(lifeTorus);
+            //gameTimer = setInterval(function () {
+                var result = stepEvolution(lifeTorus, checkOnly);
+                lifeTorus = result[0];
+                checkOnly = result[1];
                 updateGrid(lifeTorus);
-            }, 100);
+            //}, stepTime);
 
             btn.removeClass('btn-success').addClass('btn-danger');
             btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
