@@ -9,7 +9,7 @@ describe('TorusArray', function () {
             assert.equal(ta.cols, 5);
         });
     });
-    
+
     describe('public methods', function () {
         it('simple set()', function() {
             var ta = new TorusArray(2, 2);
@@ -20,7 +20,7 @@ describe('TorusArray', function () {
             var ta = new TorusArray(3, 3);
             ta.set(-1, 0, 5);
             ta.set(0, -1, 7);
-            
+
             assert.equal(ta.get(-1, 0), 5);
             assert.equal(ta.get(2, 0), 5);
 
@@ -31,12 +31,38 @@ describe('TorusArray', function () {
             var ta = new TorusArray(3, 3);
             ta.set(5, 0, 10);
             ta.set(0, 5, 7);
-            
+
             assert.equal(ta.get(5, 0), 10);
-            assert.equal(ta.get(2, 0), 10);    
+            assert.equal(ta.get(2, 0), 10);
 
             assert.equal(ta.get(0, 5), 7);
-            assert.equal(ta.get(0, 2), 7);  
+            assert.equal(ta.get(0, 2), 7);
+        });
+        it('absoluteIndex#cols', function() {
+            var ta = new TorusArray(3, 4);
+            assert.equal(ta.absoluteIndex(0, 0), 0);
+
+            assert.equal(ta.absoluteIndex(0, -1), 3);
+            assert.equal(ta.absoluteIndex(0, 1), 1);
+            assert.equal(ta.absoluteIndex(0, 2), 2);
+            assert.equal(ta.absoluteIndex(0, 4), 0);
+        });
+        it('absoluteIndex#rows', function() {
+            var ta = new TorusArray(3, 4);
+            assert.equal(ta.absoluteIndex(1, 0), 4);
+            assert.equal(ta.absoluteIndex(-1, 0), 8);
+            assert.equal(ta.absoluteIndex(2, 3), 11);
+        });
+        it('arrayIndex', function() {
+            var ta = new TorusArray(3, 4);
+            assert.deepEqual(ta.arrayIndex(4), [1, 0]);
+            assert.deepEqual(ta.arrayIndex(8), ta.normalizeIndex(-1, 0));
+            assert.deepEqual(ta.arrayIndex(11), [2, 3]);
+
+            assert.deepEqual(ta.arrayIndex(3), ta.normalizeIndex(0, -1));
+            assert.deepEqual(ta.arrayIndex(1), [0, 1]);
+            assert.deepEqual(ta.arrayIndex(2), [0, 2]);
+            assert.deepEqual(ta.arrayIndex(0), ta.normalizeIndex(0, 4));
         });
     });
 
@@ -50,7 +76,7 @@ describe('TorusArray', function () {
 
             assert.deepEqual(
                 compressed,
-                [ [1, 2, 0, 1, 1, 1, 0, 1],    
+                [ [1, 2, 0, 1, 1, 1, 0, 1],
                   [0, 5],
                   [0, 5],
                   [0, 5] ]
@@ -58,7 +84,7 @@ describe('TorusArray', function () {
         });
         it('decompresses', function() {
             var compressed = [
-                [1, 2, 0, 1, 1, 1, 0, 1],    
+                [1, 2, 0, 1, 1, 1, 0, 1],
                 [0, 5],
                 [0, 5],
                 [0, 2, 1, 2, 0, 1],
@@ -81,7 +107,7 @@ describe('TorusArray', function () {
             array.zfill2d(2, 2);
             assert.deepEqual(
                 array,
-                [ [0, 0], 
+                [ [0, 0],
                   [0, 0] ]
             );
         });
@@ -91,7 +117,7 @@ describe('TorusArray', function () {
             array.zfill2d(2, 2, 'hello');
             assert.deepEqual(
                 array,
-                [ ['hello', 'hello'], 
+                [ ['hello', 'hello'],
                   ['hello', 'hello'] ]
             );
         });
@@ -104,7 +130,7 @@ describe('TorusArray', function () {
             array.zfill2d(4, 3);
             assert.deepEqual(
                 array,
-                [ [0, 0, 0], 
+                [ [0, 0, 0],
                   [1, 2, 0],
                   [0, 0, 0],
                   [0, 0, 0] ]
@@ -120,19 +146,19 @@ describe('TorusArray', function () {
             [30, 31, 32, 33],
             [40, 41, 42, 43],
         ];
-        it('crops2d simple', function() {  
+        it('crops2d simple', function() {
             var cropped = array.crop2d(0, 0, 1, 1);
             assert.deepEqual(
                 cropped,
-                [ [0, 1], 
+                [ [0, 1],
                   [10, 11] ]
             );
         });
-        it('still crops2d :-)', function() {  
+        it('still crops2d :-)', function() {
             var cropped = array.crop2d(1, 1, 3, 2);
             assert.deepEqual(
                 cropped,
-                [ [11, 12], 
+                [ [11, 12],
                   [21, 22],
                   [31, 32] ]
             );

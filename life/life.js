@@ -11,7 +11,7 @@
     });
 
     // field configuration
-    var itemSize = 25,
+    var itemSize = 15,
         cellSize = itemSize - 1,
         margin = {
             top: 0,
@@ -111,7 +111,7 @@
 
         cells = svg.selectAll('rect[type="cell"]');
         cells.on('click', function (d, i) {
-            rect = d3.select(cells[0][i])
+            rect = d3.select(cells[0][i]);
             toggleCell(rect, i);
         });
         cells.on('mouseover', function (d, i) {
@@ -171,19 +171,38 @@
         var nextTorus = new TorusArray(currentTorus.rows, currentTorus.cols);
 
         var nextCheckOnly = [];
+
+        function indexToString(i, j) {
+            // oh, shi~
+            return i.toString() + "," + j.toString();
+        }
+
+        function stringToIndex(stringIndex) {
+            // oh, shi~ 2
+            return stringIndex.split(",").map(function(n) {
+                return parseInt(n, 10);
+            })
+        }
+
         function markForCheck(i, j, neighbors) {
-            console.log("mark for check call");
 //            if(nextCheckOnly.indexOf([i, j]) == -1) {
-            nextCheckOnly.push([i, j]);
+            var candidates = neighbors.map(function (n) {
+                return indexToString(n[0], n[1]);
+            });
+            candidates.push(indexToString(i, j));
+            for(var k = 0; k < candidates.length; k++) {
+                if(nextCheckOnly.indexOf(candidates[k]) == -1) {
+                    nextCheckOnly.push(candidates[k]);
+                }
+            }
+            //nextCheckOnly.push(indexToString(i, j));
 
 //            }
 //            nextCheckOnly.push.apply(nextCheckOnly, neighbors);
 //            console.log("after push", nextCheckOnly.length);
-            for(var k = 0; k < neighbors.length; k++) {
-//                if(nextCheckOnly.indexOf(neighbors[k]) == -1) {
-                    nextCheckOnly.push(neighbors[k]);
-//                }
-            }
+//            nextCheckOnly.push.apply(nextCheckOnly,
+
+//            );
 //            console.log("marked", neighbors.length + 1);
         }
 
@@ -229,9 +248,9 @@
         }
         else {
             // scan only marked
-            console.log("scanning", checkOnly);
-            for(var l = 0; l < checkOnly.length; l++) {
-                checkCell(checkOnly[l][0], checkOnly[l][1]);
+            for(var k = 0; k < checkOnly.length; k++) {
+                var cell = stringToIndex(checkOnly[k]);
+                checkCell(cell[0], cell[1]);
             }
         }
         console.log("cells seen", cellsSeen, "cellsAlive", cellsAlive, "next round to see", nextCheckOnly.length);
@@ -265,12 +284,12 @@
         var btn = $('#id_toggle_btn');
         var btn_span = $('#id_toggle_btn > span');
         if (btn.hasClass('btn-success')) {
-            //gameTimer = setInterval(function () {
+            gameTimer = setInterval(function () {
                 var result = stepEvolution(lifeTorus, checkOnly);
                 lifeTorus = result[0];
                 checkOnly = result[1];
                 updateGrid(lifeTorus);
-            //}, stepTime);
+            }, stepTime);
 
             btn.removeClass('btn-success').addClass('btn-danger');
             btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");

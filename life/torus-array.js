@@ -122,6 +122,18 @@
         ];
     };
 
+    TorusArray.prototype.absoluteIndex = function (row, col) {
+        var index = this.normalizeIndex(row, col);
+        return index[0] * this.cols + index[1];
+    };
+
+    TorusArray.prototype.arrayIndex = function (absoluteIndex) {
+        var col = absoluteIndex % this.cols;
+        var row = (absoluteIndex - col) / this.cols;
+        return [row, col];
+    };
+
+
     TorusArray.prototype.print = function () {
         for (var i = 0; i < this.rows; i++) {
             console.log(this.grid[i]);
