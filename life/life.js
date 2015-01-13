@@ -164,46 +164,23 @@
 
     }
 
-    function stepEvolution(currentTorus, checkOnly) {
+    function stepEvolution(currentTorus, scanCells) {
         var cellsSeen = 0;
         var startTime = performance.now();
         var cellsAlive = 0;
         var nextTorus = new TorusArray(currentTorus.rows, currentTorus.cols);
 
-        var nextCheckOnly = [];
-
-        function indexToString(i, j) {
-            // oh, shi~
-            return i.toString() + "," + j.toString();
-        }
-
-        function stringToIndex(stringIndex) {
-            // oh, shi~ 2
-            return stringIndex.split(",").map(function(n) {
-                return parseInt(n, 10);
-            })
-        }
-
-        function markForCheck(i, j, neighbors) {
-//            if(nextCheckOnly.indexOf([i, j]) == -1) {
+        var nextScanCells = [];
+        function markForScan(i, j, neighbors) {
             var candidates = neighbors.map(function (n) {
-                return indexToString(n[0], n[1]);
+                return currentTorus.absoluteIndex(n[0], n[1]);
             });
-            candidates.push(indexToString(i, j));
+            candidates.push(currentTorus.absoluteIndex(i, j));
             for(var k = 0; k < candidates.length; k++) {
-                if(nextCheckOnly.indexOf(candidates[k]) == -1) {
-                    nextCheckOnly.push(candidates[k]);
+                if(nextScanCells.indexOf(candidates[k]) == -1) {
+                    nextScanCells.push(candidates[k]);
                 }
             }
-            //nextCheckOnly.push(indexToString(i, j));
-
-//            }
-//            nextCheckOnly.push.apply(nextCheckOnly, neighbors);
-//            console.log("after push", nextCheckOnly.length);
-//            nextCheckOnly.push.apply(nextCheckOnly,
-
-//            );
-//            console.log("marked", neighbors.length + 1);
         }
 
         function checkCell(i, j) {
@@ -219,7 +196,7 @@
             // new born
             if (currentTorus.get(i, j) == 0 && population == 3) {
                 nextTorus.set(i, j, 1);
-                markForCheck(i, j, neighbors);
+                markForScan(i, j, neighbors);
                 cellsAlive++;
             }
 
@@ -231,14 +208,14 @@
                 else {
                     // lucky cell
                     nextTorus.set(i, j, 1);
-                    markForCheck(i, j, neighbors);
+                    markForScan(i, j, neighbors);
                     cellsAlive++;
                 }
             }
             cellsSeen++;
         }
 
-        if(typeof checkOnly == "undefined") {
+        if(typeof scanCells == "undefined") {
             // scan whole field
             for (var i = 0; i < currentTorus.rows; i++) {
                 for (var j = 0; j < currentTorus.cols; j++) {
@@ -248,12 +225,12 @@
         }
         else {
             // scan only marked
-            for(var k = 0; k < checkOnly.length; k++) {
-                var cell = stringToIndex(checkOnly[k]);
+            for(var k = 0; k < scanCells.length; k++) {
+                var cell = currentTorus.arrayIndex(scanCells[k]);
                 checkCell(cell[0], cell[1]);
             }
         }
-        console.log("cells seen", cellsSeen, "cellsAlive", cellsAlive, "next round to see", nextCheckOnly.length);
+        console.log("cells seen", cellsSeen, "cellsAlive", cellsAlive, "next round to see", nextScanCells.length);
 
         // metrics
         var endTime = performance.now();
@@ -264,8 +241,7 @@
             cellsAlive
         ]);
 
-        console.log("next check only", nextCheckOnly.length);
-        return [nextTorus, nextCheckOnly];
+        return [nextTorus, nextScanCells];
     }
 
     // globals
@@ -275,7 +251,7 @@
         gameTimer = 0;
 
     var lifeTorus = new TorusArray(rows, cols);
-    var checkOnly;
+    var scanCells;
 
     initGrid(lifeTorus);
     updateGrid(lifeTorus);
@@ -285,9 +261,9 @@
         var btn_span = $('#id_toggle_btn > span');
         if (btn.hasClass('btn-success')) {
             gameTimer = setInterval(function () {
-                var result = stepEvolution(lifeTorus, checkOnly);
+                var result = stepEvolution(lifeTorus, scanCells);
                 lifeTorus = result[0];
-                checkOnly = result[1];
+                scanCells = result[1];
                 updateGrid(lifeTorus);
             }, stepTime);
 
