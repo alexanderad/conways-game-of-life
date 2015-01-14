@@ -16,7 +16,3 @@ window.width = window.innerWidth
 window.height = window.innerHeight
     || document.documentElement.clientHeight
     || document.body.clientHeight;
-
-function hello(a) {
-    console.log(a);
-}

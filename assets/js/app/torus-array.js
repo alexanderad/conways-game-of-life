@@ -133,7 +133,6 @@
         return [row, col];
     };
 
-
     TorusArray.prototype.print = function () {
         for (var i = 0; i < this.rows; i++) {
             console.log(this.grid[i]);
