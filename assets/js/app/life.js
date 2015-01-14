@@ -1,5 +1,8 @@
 (function () {
 
+    /*
+     * Events section
+     */
     $(document).on('evolutionStepFinished', {}, function (event, timeTaken, generation, cellsAlive) {
         $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
         $('#id_stats_generation').text(generation);
@@ -10,136 +13,123 @@
         $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
     });
 
-    // field configuration
-    var itemSize = 15,
-        cellSize = itemSize - 1,
-        margin = {
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
-        },
-        stepTime = 100;
-    // balance number of cells / width to fill screen
-    var rows = Math.floor(window.height / itemSize);
-    var cols = Math.floor(window.width / itemSize);
+    function Life() {
+        // overall configuration
+        var torus;
+        var itemSize = 15,
+            cellSize = itemSize - 1,
+            margin = {
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0
+            },
+            stepTime = 100;
 
-    function initGrid(torus) {
-        /*
-        var yAxisScale = d3.scale.linear()
-                .range([0, itemSize * (torus.rows - 1)])
-                .domain([1, torus.rows]),
-            yAxis = d3.svg.axis()
-                .orient('left')
-                .ticks(torus.rows)
-                .scale(yAxisScale);
+        // balance number of cells / width to fill screen
+        var rows = Math.floor(window.height / itemSize);
+        var cols = Math.floor(window.width / itemSize);
 
-        var xAxisScale = d3.scale.linear()
-                .range([0, itemSize * (torus.cols - 1)])
-                .domain([1, torus.cols]),
-            xAxis = d3.svg.axis()
-                .orient('top')
-                .ticks(torus.cols)
-                .scale(xAxisScale);
-        */
+        function initGrid() {
+            /*
+             * Grid initializer.
+             */
 
-        var width = (torus.cols * itemSize) + margin.right + margin.left;
-        var height = (torus.rows * itemSize) + margin.top + margin.bottom;
+            var width = (torus.cols * itemSize) + margin.right + margin.left;
+            var height = (torus.rows * itemSize) + margin.top + margin.bottom;
 
-        var svg = d3.select('[role="fieldmap"]');
+            var svg = d3.select('[role="fieldmap"]');
 
-        /*
-        // Y axis
-        svg.append('g')
-            .attr('transform',
-                'translate(' + (margin.left + 5 ) + ',' + (margin.top + cellSize / 2) + ')')
-            .attr('class', 'axis')
-            .call(yAxis);
+            // all cells background
+            svg.append('rect')
+                .attr('transform',
+                      'translate(' + (margin.left - 1) + ',' + (margin.top - 1) + ')')
+                .attr('width', width - margin.left - margin.right + 1)
+                .attr('height', height - margin.top - margin.bottom + 1)
+                .attr('fill', '#ccc');
 
-        // X axis
-        svg.append('g')
-            .attr('transform',
-                'translate(' + (margin.left + cellSize / 2 ) + ',' + (margin.top + 5) + ')')
-            .attr('class', 'axis')
-            .call(xAxis);
-        */
+            var fieldmap = svg
+                .attr('width', width)
+                .attr('height', height)
+                .append('g') // group for all cells
+                .attr('role', 'field')
+                .attr('transform',
+                      'translate(' + (margin.left) + ',' + (margin.top) + ')');
 
-        svg.append('rect') // this is background for all cells
-            .attr('transform',
-                'translate(' + (margin.left - 1) + ',' + (margin.top - 1) + ')')
-            .attr('width', width - margin.left - margin.right + 1)
-            .attr('height', height - margin.top - margin.bottom + 1)
-            .attr('fill', '#ccc');
+            var grid = torus.toArray();
 
-        var fieldmap = svg
-            .attr('width', width)
-            .attr('height', height)
-            .append('g') // group for all cells
-            .attr('role', 'field')
-            .attr('transform',
-                'translate(' + (margin.left) + ',' + (margin.top) + ')');
+            // add rows
+            var rows = fieldmap.selectAll('g')
+                .data(grid)
+                .enter()
+                .append('g')
+                // shift each row from top by its number
+                .attr('transform', function (d, i) {
+                    return 'translate(0, ' + itemSize * i + ')';
+                });
 
-        var grid = torus.toArray();
+            // for each row draw cells
+            rows.selectAll()
+                .data(function (d) {
+                    return d;
+                })
+                .enter()
+                .append('rect')
+                .attr('type', 'cell')
+                .attr('width', cellSize)
+                .attr('height', cellSize)
+                .attr('fill', '#ffffff')
+                .attr('data-value', function (d) {
+                    return d;
+                })
+                .attr('x', function (d, i) {
+                    return itemSize * i;
+                });
 
-        // add rows
-        var rows = fieldmap.selectAll('g')
-            .data(grid)
-            .enter()
-            .append('g')
-            // shift each row from top by its number
-            .attr('transform', function (d, i) {
-                return 'translate(0, ' + itemSize * i + ')';
+            // cell actions
+            var cells = svg.selectAll('rect[type="cell"]');
+            cells.on('click', function (d, i) {
+                var rect = d3.select(cells[0][i]);
+                toggleCell(rect, i);
             });
-
-        // for each row draw cells
-        rows.selectAll()
-            .data(function (d) {
-                return d;
-            })
-            .enter()
-            .append('rect')
-            .attr('type', 'cell')
-            .attr('width', cellSize)
-            .attr('height', cellSize)
-            .attr('fill', '#ffffff')
-            .attr('data-value', function (d) {
-                return d;
-            })
-            .attr('x', function (d, i) {
-                return itemSize * i;
+            cells.on('mouseover', function (d, i) {
+                var rect = d3.select(cells[0][i]);
+                rect.attr('opacity', .35);
             });
-
-        cells = svg.selectAll('rect[type="cell"]');
-        cells.on('click', function (d, i) {
-            rect = d3.select(cells[0][i]);
-            toggleCell(rect, i);
-        });
-        cells.on('mouseover', function (d, i) {
-            rect = d3.select(cells[0][i]);
-            rect.attr('opacity', .35);
-        });
-        cells.on('mouseout', function (d, i) {
-            rect = d3.select(cells[0][i]);
-            rect.attr('opacity', 1)
-        });
-
+            cells.on('mouseout', function (d, i) {
+                var rect = d3.select(cells[0][i]);
+                rect.attr('opacity', 1)
+            });
+        }
     }
 
     function toggleCell(rect, i) {
         var row = Math.floor(i / lifeTorus.cols);
         var col = i % lifeTorus.cols;
 
+
         var currentValue = lifeTorus.get(row, col);
         var newValue = currentValue == 1 ? 0 : 1;
+
+        if(1 == newValue) {
+            mark
+        }
+        else {
+            var index = scanCells.indexOf(i);
+            if(index > -1) {
+                scanCells.splice(index, 1);
+            }
+        }
+
         rect.attr('fill', newValue == 1 ? '#000' : '#fff');
         lifeTorus.set(row, col, newValue);
     }
 
     function colorizeGrid() {
         var svg = d3.select('[role="fieldmap"]');
-        var items = svg.selectAll('rect[type="cell"]')
-            //.transition()
-            //.duration(stepTime / 2)
+        svg.selectAll('rect[type="cell"]')
+            .transition()
+            .duration(stepTime)
             .attr('fill', function (d) {
                 return d == 1 ? '#000' : '#fff';
             });
@@ -151,7 +141,7 @@
         var gridItems = d3.merge(grid);
 
         var svg = d3.select('[role="fieldmap"]');
-        var items = svg.selectAll('rect[type="cell"]')
+        svg.selectAll('rect[type="cell"]')
             .data(gridItems)
             .attr('data-value', function (d) {
                 return d;
@@ -171,6 +161,7 @@
         var nextTorus = new TorusArray(currentTorus.rows, currentTorus.cols);
 
         var nextScanCells = [];
+
         function markForScan(i, j, neighbors) {
             var candidates = neighbors.map(function (n) {
                 return currentTorus.absoluteIndex(n[0], n[1]);
@@ -251,7 +242,7 @@
         gameTimer = 0;
 
     var lifeTorus = new TorusArray(rows, cols);
-    var scanCells;
+    var scanCells = [];
 
     initGrid(lifeTorus);
     updateGrid(lifeTorus);
@@ -276,21 +267,6 @@
             btn.removeClass('btn-danger').addClass('btn-success');
             btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
         }
-    });
-
-    $(".field-presets-container a").click(function (event) {
-        var item = $(event.target);
-        var preset = presets[item.attr('data-group')][item.attr('data-key')];
-        preset.zfill2d(lifeTorus.rows, lifeTorus.cols);
-        lifeTorus.setArray(preset);
-        updateGrid(lifeTorus);
-    });
-
-    $("#id_preset_empty").click(function (event) {
-        lifeTorus.setArray(
-            new TorusArray(lifeTorus.rows, lifeTorus.cols).toArray()
-        );
-        updateGrid(lifeTorus);
     });
 
 })();

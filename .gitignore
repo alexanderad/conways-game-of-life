@@ -31,4 +31,4 @@ node_modules
 .lock-wscript
 
 # generated parser
-assets/js/*.js
+assets/js/app/rle-parser.js
