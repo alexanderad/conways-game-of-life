@@ -1,4 +1,4 @@
-(function (exports) {
+define(function() {
 
     Array.prototype.extendWith = function (extendWith, times) {
         /*
@@ -249,6 +249,5 @@
         return neighbors;
     };
 
-    exports.TorusArray = TorusArray;
-
-})(typeof exports === 'undefined' ? this['modules'] = {} : exports);
+    return TorusArray;
+});
