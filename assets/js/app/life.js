@@ -30,12 +30,9 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
 
         this.generation = 0;
         this.cellsAlive = 0;
-        this.markedCells = [];
+        this.markedCells = undefined;
 
         this.initGrid = function() {
-            /*
-             * Grid initializer.
-             */
             var width = (this.cols * itemSize) + margin.right + margin.left;
             var height = (this.rows * itemSize) + margin.top + margin.bottom;
 
@@ -84,95 +81,111 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
 
             // cell actions
             var cells = svg.selectAll('rect[type="cell"]');
-            cells.on('click', function (d, i) {
-                var rect = d3.select(cells[0][i]);
-                this.toggleCell(rect, i);
+
+            var instance = this;
+            cells.on('click', function(d, i) {
+                instance.toggleCell(this, i);
             });
-            cells.on('mouseover', function (d, i) {
-                var rect = d3.select(cells[0][i]);
-                rect.attr('opacity', .35);
+
+            cells.on('mouseover', function () {
+                d3.select(this).attr('opacity', .35);
             });
-            cells.on('mouseout', function (d, i) {
-                var rect = d3.select(cells[0][i]);
-                rect.attr('opacity', 1)
+            cells.on('mouseout', function () {
+                d3.select(this).attr('opacity', 1);
             });
 
             console.log("life.js: grid initialized");
         };
 
-        this.toggleCell = function(rect, i) {
-            var torusIndex = this.torus.arrayIndex(i);
-            var row = torusIndex[0],
-                col = torusIndex[1];
-
-            var currentValue = this.torus.get(row, col);
-            var newValue = currentValue == 1 ? 0 : 1;
-
-            /*
-             if (1 == newValue) {
-             mark
-             }
-             else {
-             var index = scanCells.indexOf(i);
-             if (index > -1) {
-             scanCells.splice(index, 1);
-             }
-             }
-             */
-
-            rect.attr('fill', newValue == 1 ? '#000' : '#fff');
-            this.torus.set(row, col, newValue);
-        };
-
-        this.colorizeGrid = function() {
-            var svg = d3.select('[role="fieldmap"]');
-            svg.selectAll('rect[type="cell"]')
-                .transition()
-                .duration(this.stepTime)
-                .attr('fill', function (d) {
-                    return d == 1 ? '#000' : '#fff';
-                });
-        };
-
-        this.updateGrid = function() {
-            var startTime = performance.now();
-            var grid = this.torus.toArray();
-            var gridItems = d3.merge(grid);
-
-            var svg = d3.select('[role="fieldmap"]');
-            svg.selectAll('rect[type="cell"]')
-                .data(gridItems);
-
-            this.colorizeGrid();
-
-            // metrics
-            var endTime = performance.now();
-            this.trigger('updateGridFinished', [endTime - startTime]);
-        };
-
-        this.markForScan = function(i, j) {
-            var candidates = this.torus.neighbors(i, j);
-            candidates.push([i, j]);
-            candidates = candidates.map(function (n) {
-                return this.torus.absoluteIndex(n[0], n[1]);
-            });
-
-            for(var k = 0; k < candidates.length; k++) {
-                if(this.markedCells.indexOf(candidates[k]) == -1) {
-                    this.markedCells.push(candidates[k]);
-                }
-            }
-        };
-
-
-        // init
         this.initGrid();
     } // end of life
 
-    Life.prototype.evolve = function(currentTorus, scanCells) {
+    Life.prototype.colorizeGrid = function () {
+        /*
+         * Applies colors to grid.
+         */
+        var svg = d3.select('[role="fieldmap"]');
+        svg.selectAll('rect[type="cell"]')
+            .transition()
+            .duration(this.stepTime)
+            .attr('fill', function (d) {
+                return d == 1 ? '#000' : '#fff';
+            });
+    };
+
+    Life.prototype.updateGrid = function () {
+        /*
+         * Updates the grid.
+         */
+        var startTime = performance.now();
+        var grid = this.torus.toArray();
+        var gridItems = d3.merge(grid);
+
+        var svg = d3.select('[role="fieldmap"]');
+        svg.selectAll('rect[type="cell"]')
+            .data(gridItems);
+
+        this.colorizeGrid();
+
+        // metrics
+        var endTime = performance.now();
+        this.trigger('updateGridFinished', [endTime - startTime]);
+    };
+
+    Life.prototype.markForScan = function (i, j) {
+        /*
+         * Adds cell for scan on the next evolution step.
+         */
+        var candidates = this.torus.neighbors(i, j);
+        candidates.push([i, j]);
+
+        var instance = this;
+        candidates = candidates.map(function (n) {
+            return instance.torus.absoluteIndex(n[0], n[1]);
+        });
+
+        for (var k = 0; k < candidates.length; k++) {
+            if (this.markedCells.indexOf(candidates[k]) == -1) {
+                this.markedCells.push(candidates[k]);
+            }
+        }
+    };
+
+    Life.prototype.toggleCell = function(cell, absoluteIndex) {
+        /*
+         * Changes single cell state.
+         */
+
+        var torusIndex = this.torus.arrayIndex(absoluteIndex);
+        var row = torusIndex[0],
+            col = torusIndex[1];
+
+        var currentValue = this.torus.get(row, col);
+        var newValue = currentValue == 1 ? 0 : 1;
+
+//
+//        /*
+//         if (1 == newValue) {
+//         mark
+//         }
+//         else {
+//         var index = scanCells.indexOf(i);
+//         if (index > -1) {
+//         scanCells.splice(index, 1);
+//         }
+//         }
+//         */
+//
+        d3.select(cell).attr('fill', newValue == 1 ? '#000' : '#fff');
+        this.torus.set(row, col, newValue);
+    };
+
+    Life.prototype.evolve = function() {
         /*
          * Performs one step of evolution process.
          */
+
+        console.log("call to prototype", this);
         var startTime = performance.now();
 
         var nextScanCells = [];
@@ -213,10 +226,10 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
             cellsSeen++;
         }
 
-        if(typeof scanCells == "undefined") {
+        if(typeof this.markedCells == "undefined") {
             // scan whole field
-            for (var i = 0; i < currentTorus.rows; i++) {
-                for (var j = 0; j < currentTorus.cols; j++) {
+            for (var i = 0; i < this.torus.rows; i++) {
+                for (var j = 0; j < this.torus.cols; j++) {
                     checkCell.call(this, i, j);
                 }
             }
