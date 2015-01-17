@@ -1,5 +1,5 @@
 .field-container, .controls-container {
-    
+
 }
 
 .main {
@@ -37,4 +37,18 @@
 
 .fieldmap rect {
     cursor: crosshair;
+}
+
+.controls-panel {
+    position: absolute;
+    z-index: 100;
+    top: 20px;
+    left: 20px;
+    width: 170px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.controls-panel .list-group-item {
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
 }

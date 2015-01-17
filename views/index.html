@@ -19,63 +19,33 @@
   </head>
 
   <body>
-    <button id="id_toggle_btn" class="btn btn-success" style="position: absolute; z-index:100; top: 10px; left:10px">
-      <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-    </button>
-    <div style="position: absolute; z-index:100; top: 55px; left:10px; background-color: rgba(255, 255, 255, 0.5)">
-        <div> grid <span id="id_stats_render_grid_ms">0</span></div>
-        <div> evo <span id="id_stats_step_evolution_ms">0</span></div>
-    </div>
-    <svg role="fieldmap" class="fieldmap" style="text-align: center"></svg>
-    <div class="container main" style="display: none">
-      <h1>Conway's Game of Life</h1>
-      <div class="row">
-        <div class="col-md-6">
-          <h3>Grid</h3>
-          <div class="field-container">
 
-          </div>
-        </div>
-        <div class="col-md-6">
-          <h3>Controls</h3>
-          <div class="controls-container">
-            <button id="id_toggle_btn" class="btn btn-success">
+  <div class="panel panel-warning controls-panel">
+      <!--<div class="panel-heading">Controls</div>-->
+      <div class="panel-body">
+          <button id="id_toggle_btn" class="btn btn-xs btn-success">
               <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-            </button>
-          </div>
-
-          <h3>Stats</h3>
-            <!--
-          <div class="stats-container">
-            <div class="row">
-              <div class="col-sm-3 bold right">Generation</div>
-              <div class="col-sm-7" id="id_stats_generation">0</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-3 bold right">Cells alive</div>
-              <div class="col-sm-7" id="id_stats_cells_alive">0</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-3">&nbsp;</div>
-            </div>
-            <div class="row">
-              <div class="col-sm-3 right code">stepEvolution</div>
-              <div class="col-sm-7">
-                <span id="id_stats_step_evolution_ms">0</span> ms
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-3 right code">updateGrid</div>
-              <div class="col-sm-7">
-                <span id="id_stats_render_grid_ms">0</span> ms
-              </div>
-            </div>
-          </div>
-          -->
-
-        </div>
+          </button>
       </div>
-    </div>
+
+      <ul class="list-group">
+          <li class="list-group-item">Generation
+              <span class="badge" id="id_stats_generation">0</span>
+          </li>
+          <li class="list-group-item">Cells alive
+              <span class="badge" id="id_stats_cells_alive">0</span>
+          </li>
+          <li class="list-group-item">Evolution, ms
+              <span class="badge" id="id_stats_step_evolution_ms">0</span>
+          </li>
+          <li class="list-group-item">Render grid, ms
+              <span class="badge" id="id_stats_render_grid_ms">0</span>
+          </li>
+      </ul>
+  </div>
+
+  <svg role="fieldmap" class="fieldmap" style="text-align: center"></svg>
+
 
     <!-- fork me on github ribbon -->
     <!--<a href="https://github.com/alexanderad/conways-game-of-life"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/e7bbb0521b397edbd5fe43e7f760759336b5e05f/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png"></a>-->
