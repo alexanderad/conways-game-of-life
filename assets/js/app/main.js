@@ -2,13 +2,13 @@ define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEnco
     var life = new Life();
 
     $(life).on('evolutionStepFinished', {}, function (event, timeTaken, generation, cellsAlive) {
-//        $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
+        $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
         $('#id_stats_generation').text(generation);
         $('#id_stats_cells_alive').text(cellsAlive);
     });
 
     $(life).on('updateGridFinished', {}, function (event, timeTaken) {
-//        $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
+        $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
     });
 
     $('#id_toggle_btn').click(function () {
@@ -38,14 +38,27 @@ define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEnco
         $.get('/rle/get/' + fileName, function(response) {
             if(response.success) {
                 var fileData = response.fileData;
-
                 var parsedData = RunLengthEncodedParser.parse(fileData);
-                console.log(parsedData);
+
+                var lines = getRLEData(parsedData, "lines");
+                var header = getRLEData(parsedData, "header");
+                console.log(header);
+                console.log(lines);
             }
             else {
                 console.log(response);
             }
         });
+    }
+
+    function getRLEData(parsedData, dataType) {
+        for(var i = 0; i < parsedData.length; i++) {
+            if(parsedData[i].type == dataType) {
+                var data = parsedData[i];
+                delete data["type"];
+                return data;
+            }
+        }
     }
 
     function loadRLEFilesList() {

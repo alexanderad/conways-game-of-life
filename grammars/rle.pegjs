@@ -152,7 +152,7 @@ digit
 * Various
 */
 nl "new line"
- = "\n"
+ = "\n" / "\r\n"
 
 ws "white space"
  = [ \t]

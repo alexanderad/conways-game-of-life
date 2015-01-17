@@ -1,3 +1,10 @@
+// requirejs -> npm module compatibility shit
+if(typeof define == "undefined") {
+    define = function (func) {
+        exports.TorusArray = func();
+    }
+}
+
 define(function() {
 
     Array.prototype.extendWith = function (extendWith, times) {
@@ -114,6 +121,10 @@ define(function() {
 
         this.grid = initGrid(rows, cols);
     }
+
+    TorusArray.prototype.fromRLEData = function(header, lines) {
+
+    };
 
     TorusArray.prototype.normalizeIndex = function (row, col) {
         return [

@@ -1,5 +1,5 @@
 var assert = require('chai').assert,
-    TorusArray = require('../life/torus-array.js').TorusArray;
+    TorusArray = require('../assets/js/app/torus-array.js').TorusArray;
 
 describe('TorusArray', function () {
     describe('public and private properties', function () {

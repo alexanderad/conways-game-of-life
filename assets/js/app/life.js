@@ -1,6 +1,6 @@
 define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, TorusArray) {
 
-    function Life() {
+    function Life(rows, cols) {
         /*
          * Represents a Life field.
          */
