@@ -9,9 +9,6 @@ requirejs.config({
     "shim": {
         "bootstrap": {
             deps: ["jquery"]
-        },
-        "rle-parser": {
-            exports: 'RunLengthEncodedParser'
         }
     }
 });

@@ -1,4 +1,4 @@
-define(["app/life", "bootstrap"], function(Life) {
+define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEncodedParser) {
     var life = new Life();
 
     $(life).on('evolutionStepFinished', {}, function (event, timeTaken, generation, cellsAlive) {
@@ -38,7 +38,9 @@ define(["app/life", "bootstrap"], function(Life) {
         $.get('/rle/get/' + fileName, function(response) {
             if(response.success) {
                 var fileData = response.fileData;
-                
+
+                var parsedData = RunLengthEncodedParser.parse(fileData);
+                console.log(parsedData);
             }
             else {
                 console.log(response);
@@ -53,8 +55,13 @@ define(["app/life", "bootstrap"], function(Life) {
             if(response.success) {
                 responseContainer.append('<ul>');
                 for(var i = 0; i < response.files.length; i++) {
-                    responseContainer.append(
-                        '<li class="item-file"><a href="#" data-file="' + response.files[i] + '">' + response.files[i] + '</a></li>');
+                    responseContainer.append([
+                        '<li class="item-file">',
+                            '<a href="#" data-file="' + response.files[i] + '">',
+                                response.files[i],
+                            '</a>',
+                        '</li>'
+                    ].join(''));
                 }
                 responseContainer.append('</ul>');
                 $("li.item-file a").on('click', function () {
