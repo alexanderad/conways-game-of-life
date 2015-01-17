@@ -14,24 +14,24 @@ define(["app/life", "bootstrap"], function(Life) {
     $('#id_toggle_btn').click(function () {
         var btn = $('#id_toggle_btn');
         var btn_span = $('#id_toggle_btn > span');
-        life.evolve();
-//        if (btn.hasClass('btn-success')) {
-//            gameTimer = setInterval(function () {
-//                var result = stepEvolution(lifeTorus, scanCells);
-//                lifeTorus = result[0];
-//                scanCells = result[1];
-//                updateGrid(lifeTorus);
-//            }, stepTime);
-//
-//            btn.removeClass('btn-success').addClass('btn-danger');
-//            btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
-//        }
-//        else {
-//            clearTimeout(gameTimer);
-//
-//            btn.removeClass('btn-danger').addClass('btn-success');
-//            btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
-//        }
+
+        if (btn.hasClass('btn-success')) {
+            life.gameTimer = setInterval(function () {
+                var markedCells = life.evolve();
+                if(markedCells == 0) {
+                    $(btn).click();
+                }
+            }, life.stepTime);
+
+            btn.removeClass('btn-success').addClass('btn-danger');
+            btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
+        }
+        else {
+            clearTimeout(life.gameTimer);
+
+            btn.removeClass('btn-danger').addClass('btn-success');
+            btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
+        }
     });
 
 });

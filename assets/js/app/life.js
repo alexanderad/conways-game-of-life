@@ -22,12 +22,14 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
         this.rows = Math.floor(window.height / itemSize);
         this.cols = Math.floor(window.width / itemSize);
 
-        this.torusQueue = [
-            new TorusArray(this.rows, this.cols),
-            new TorusArray(this.rows, this.cols)
-        ];
-        this.torus = this.torusQueue[0];
+//        this.torusQueue = [
+//            new TorusArray(this.rows, this.cols),
+//            new TorusArray(this.rows, this.cols)
+//        ];
+//        this.torus = this.torusQueue[0];
+        this.torus = new TorusArray(this.rows, this.cols);
 
+        this.gameTimer = undefined;
         this.generation = 0;
         this.cellsAlive = 0;
         this.markedCells = [];
@@ -170,11 +172,17 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
     Life.prototype.evolve = function() {
         /*
          * Performs one step of evolution process.
+         * Returns number of cells to scan on the next step.
          */
+        if(this.markedCells.length == 0) {
+            console.log("life.js: no cells marked for scan");
+            return 0;
+        }
 
         var startTime = performance.now();
 
-        var nextTorus = this.torusQueue.shift();
+        var nextTorus = new TorusArray(this.torus.rows, this.torus.cols);
+        //var nextTorus = this.torusQueue.shift();
 
         var cellsSeen = 0,
             cellsAlive = 0;
@@ -211,24 +219,16 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
             cellsSeen++;
         }
 
-        if(this.markedCells.length == 0) {
-            // scan whole field
-            for (var i = 0; i < this.torus.rows; i++) {
-                for (var j = 0; j < this.torus.cols; j++) {
-                    checkCell(this, i, j);
-                }
-            }
-        }
-        else {
-            // scan only marked
-            for(var k = 0; k < this.markedCells.length; k++) {
-                var cell = this.torus.arrayIndex(this.markedCells[k]);
-                checkCell(this, cell[0], cell[1]);
-            }
+        // scan only marked
+        var markedCells = this.markedCells;
+        this.markedCells = [];
+        for(var k = 0; k < markedCells.length; k++) {
+            var cell = this.torus.arrayIndex(markedCells[k]);
+            checkCell(this, cell[0], cell[1]);
         }
 
         // swap torus
-        this.torusQueue.push(this.torus);
+        //this.torusQueue.push(this.torus);
         this.torus = nextTorus;
         this.cellsAlive = cellsAlive;
         this.generation++;
@@ -242,11 +242,13 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
             this.cellsAlive
         ]);
 
-
         this.updateGrid();
-        console.log("cells seen", cellsSeen,
+        console.log("life.js:",
+                    "cells seen", cellsSeen,
                     "cellsAlive", cellsAlive,
                     "cells to see next round", this.markedCells.length);
+
+        return this.markedCells;
     };
 
 
