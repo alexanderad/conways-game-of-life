@@ -20,29 +20,42 @@
 
   <body>
 
-  <div class="panel panel-warning controls-panel">
-      <!--<div class="panel-heading">Controls</div>-->
-      <div class="panel-body">
-          <button id="id_toggle_btn" class="btn btn-xs btn-success">
-              <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-          </button>
+  <div class="controls-panel">
+      <div class="panel panel-warning">
+          <div class="panel-heading">Controls</div>
+          <div class="panel-body">
+              <button id="id_toggle_btn" class="btn btn-xs btn-success">
+                  <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+              </button>
+          </div>
       </div>
-
-      <ul class="list-group">
-          <li class="list-group-item">Generation
-              <span class="badge" id="id_stats_generation">0</span>
-          </li>
-          <li class="list-group-item">Cells alive
-              <span class="badge" id="id_stats_cells_alive">0</span>
-          </li>
-          <li class="list-group-item">Evolution, ms
-              <span class="badge" id="id_stats_step_evolution_ms">0</span>
-          </li>
-          <li class="list-group-item">Render grid, ms
-              <span class="badge" id="id_stats_render_grid_ms">0</span>
-          </li>
-      </ul>
+      <div class="panel panel-warning">
+          <div class="panel-heading">Stats</div>
+          <ul class="list-group">
+              <li class="list-group-item">Generation
+                  <span class="badge" id="id_stats_generation">0</span>
+              </li>
+              <li class="list-group-item">Cells alive
+                  <span class="badge" id="id_stats_cells_alive">0</span>
+              </li>
+              <!--
+              <li class="list-group-item">Evolution, ms
+                  <span class="badge" id="id_stats_step_evolution_ms">0</span>
+              </li>
+              <li class="list-group-item">Render grid, ms
+                  <span class="badge" id="id_stats_render_grid_ms">0</span>
+              </li>
+              -->
+          </ul>
+      </div>
+      <div class="panel panel-info">
+          <div class="panel-heading">RLE browser</div>
+          <div class="panel-body" id="id_rle_panel_body">
+              Loading...
+          </div>
+      </div>
   </div>
+
 
   <svg role="fieldmap" class="fieldmap" style="text-align: center"></svg>
 

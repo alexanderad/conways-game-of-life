@@ -42,13 +42,22 @@
 .controls-panel {
     position: absolute;
     z-index: 100;
-    top: 20px;
-    left: 20px;
-    width: 170px;
-    background-color: rgba(255, 255, 255, 0.7);
+    top: 10px;
+    left: 10px;
+    width: 200px;
 }
 
-.controls-panel .list-group-item {
+.controls-panel .panel-heading {
     padding: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
+    font-weight: bold;
+}
+
+.controls-panel .panel-body, .controls-panel .list-group-item {
+    padding: 5px;
+}
+
+li.item-file {
+    max-width: 170px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

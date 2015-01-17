@@ -2,13 +2,13 @@ define(["app/life", "bootstrap"], function(Life) {
     var life = new Life();
 
     $(life).on('evolutionStepFinished', {}, function (event, timeTaken, generation, cellsAlive) {
-        $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
+//        $('#id_stats_step_evolution_ms').text(timeTaken.toFixed(0));
         $('#id_stats_generation').text(generation);
         $('#id_stats_cells_alive').text(cellsAlive);
     });
 
     $(life).on('updateGridFinished', {}, function (event, timeTaken) {
-        $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
+//        $('#id_stats_render_grid_ms').text(timeTaken.toFixed(0));
     });
 
     $('#id_toggle_btn').click(function () {
@@ -34,4 +34,36 @@ define(["app/life", "bootstrap"], function(Life) {
         }
     });
 
+    function loadRLEFile(fileName) {
+        $.get('/rle/get/' + fileName, function(response) {
+            if(response.success) {
+                var fileData = response.fileData;
+                
+            }
+            else {
+                console.log(response);
+            }
+        });
+    }
+
+    function loadRLEFilesList() {
+        $.get('/rle/list', function(response) {
+            var responseContainer = $("#id_rle_panel_body");
+            responseContainer.text('');
+            if(response.success) {
+                responseContainer.append('<ul>');
+                for(var i = 0; i < response.files.length; i++) {
+                    responseContainer.append(
+                        '<li class="item-file"><a href="#" data-file="' + response.files[i] + '">' + response.files[i] + '</a></li>');
+                }
+                responseContainer.append('</ul>');
+                $("li.item-file a").on('click', function () {
+                    var fileName = $(this).attr('data-file');
+                    loadRLEFile(fileName);
+                });
+            }
+        });
+    }
+
+    loadRLEFilesList();
 });

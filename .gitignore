@@ -32,3 +32,4 @@ node_modules
 
 # generated parser
 assets/js/app/rle-parser.js
+patterns/*.rle
