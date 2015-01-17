@@ -39,11 +39,9 @@ define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEnco
             if(response.success) {
                 var fileData = response.fileData;
                 var parsedData = RunLengthEncodedParser.parse(fileData);
-
                 var lines = getRLEData(parsedData, "lines");
                 var header = getRLEData(parsedData, "header");
-                console.log(header);
-                console.log(lines);
+                new life.torus.fromRLEData(header, lines);
             }
             else {
                 console.log(response);

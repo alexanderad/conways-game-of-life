@@ -122,14 +122,32 @@ define(function() {
         this.grid = initGrid(rows, cols);
     }
 
-    TorusArray.prototype.fromRLEData = function(header, lines) {
+    TorusArray.fromRLEData = function(header, lines, topLeftCoordinates) {
+        var rows = header.x;
+        var cols = header.y;
+        var torus = new TorusArray(rows, cols),
+            torusArray = [];
 
+        for(var i = 0; i < lines.items.length; i++) {
+            var row = [];
+            var line = lines.items[i];
+            for(var j = 0; j < line.length; j++) {
+                var count = line[j][0];
+                var value = line[j][1] == 'o' ? 1 : 0;
+                row.extendWith(value, count);
+            }
+            torusArray.push(row);
+        }
+
+        torusArray.zfill2d(rows, cols);
+        torus.setArray(torusArray);
+        return torus;
     };
 
     TorusArray.prototype.normalizeIndex = function (row, col) {
         return [
-                (this.rows + row) % this.rows,
-                (this.cols + col) % this.cols
+            (this.rows + row) % this.rows,
+            (this.cols + col) % this.cols
         ];
     };
 
@@ -163,7 +181,7 @@ define(function() {
     TorusArray.prototype.setArray = function (arr) {
         if ((arr.length != this.rows) || (arr[0].length != this.cols)) {
             console.log(
-                "Input array does not correspond TorusArray cols / rows"
+                "Input array does not correspond TorusArray cols / rows instance"
             );
         }
         else {
@@ -198,18 +216,14 @@ define(function() {
             return compressedRow;
         }
 
-        var originalSize = this.toArray().toString().length;
+        //var originalSize = this.toArray().toString().length;
         var compressed = [];
 
         for (var i = 0; i < this.rows; i++) {
             compressed.push(compressRow(this.grid[i]));
         }
 
-        var compressedSize = compressed.toString().length;
-        console.log(
-            "compression ratio:",
-            (originalSize / compressedSize).toFixed(2)
-        );
+        //var compressedSize = compressed.toString().length;
         return compressed;
     };
 

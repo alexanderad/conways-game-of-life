@@ -164,4 +164,44 @@ describe('TorusArray', function () {
             );
         });
     });
+
+    describe('fromRLEData', function() {
+        var header = {x: 5, y: 10};
+        var lines = {
+            items: [
+                [
+                    [5, 'b'],
+                    [1, 'o'],
+                    [2, 'b']
+                ],
+                [],
+                [
+                    [1, 'b'],
+                    [2, 'o']
+                ]
+            ]
+        };
+        it('returns TorusArray', function() {
+           var torus = TorusArray.fromRLEData(header, lines, {});
+           assert.isObject(torus);
+        });
+        it('reads header correctly', function() {
+            var torus = TorusArray.fromRLEData(header, lines, {});
+            assert.equal(torus.rows, 5);
+            assert.equal(torus.cols, 10);
+        });
+        it('reads lines correctly', function() {
+            var torus = TorusArray.fromRLEData(header, lines, {});
+            assert.deepEqual(
+                torus.toArray(),
+                [
+                    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                ]
+            );
+        });
+    });
 });
