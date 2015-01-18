@@ -1,4 +1,4 @@
-define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEncodedParser) {
+define(["app/life", "bootstrap"], function(Life) {
     var life = new Life();
 
     $(life).on('evolutionStepFinished', {}, function (event, timeTaken, generation, cellsAlive) {
@@ -37,26 +37,12 @@ define(["app/life", "app/rle-parser", "bootstrap"], function(Life, RunLengthEnco
     function loadRLEFile(fileName) {
         $.get('/rle/get/' + fileName, function(response) {
             if(response.success) {
-                var fileData = response.fileData;
-                var parsedData = RunLengthEncodedParser.parse(fileData);
-                var lines = getRLEData(parsedData, "lines");
-                var header = getRLEData(parsedData, "header");
-                new life.torus.fromRLEData(header, lines);
+                life = Life.fromRLEFile(response.fileData);
             }
             else {
                 console.log(response);
             }
         });
-    }
-
-    function getRLEData(parsedData, dataType) {
-        for(var i = 0; i < parsedData.length; i++) {
-            if(parsedData[i].type == dataType) {
-                var data = parsedData[i];
-                delete data["type"];
-                return data;
-            }
-        }
     }
 
     function loadRLEFilesList() {

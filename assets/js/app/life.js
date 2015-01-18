@@ -1,6 +1,7 @@
-define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, TorusArray) {
+define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], function(
+        $, d3, TorusArray, RunLengthEncodedParser) {
 
-    function Life(rows, cols) {
+    function Life(initialTorus) {
         /*
          * Represents a Life field.
          */
@@ -18,16 +19,23 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
         // instance variables
         this.stepTime = 100;
 
-        // balance number of cells / width to fill screen
-        this.rows = Math.floor(window.height / itemSize);
-        this.cols = Math.floor(window.width / itemSize);
+        if(typeof initialTorus == "undefined") {
+            // balance number of cells / width to fill screen
+            this.rows = Math.floor(window.height / itemSize);
+            this.cols = Math.floor(window.width / itemSize);
+            this.torus = new TorusArray(this.rows, this.cols);
+        }
+        else {
+            this.torus = initialTorus;
+            this.rows = this.torus.rows;
+            this.cols = this.torus.cols;
+        }
 
 //        this.torusQueue = [
 //            new TorusArray(this.rows, this.cols),
 //            new TorusArray(this.rows, this.cols)
 //        ];
 //        this.torus = this.torusQueue[0];
-        this.torus = new TorusArray(this.rows, this.cols);
 
         this.gameTimer = undefined;
         this.generation = 0;
@@ -76,7 +84,9 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
                 .attr('type', 'cell')
                 .attr('width', cellSize)
                 .attr('height', cellSize)
-                .attr('fill', '#fff')
+                .attr('fill', function (d) {
+                    return d == 1 ? '#000' : '#fff';
+                })
                 .attr('x', function (d, i) {
                     return itemSize * i;
                 });
@@ -96,11 +106,30 @@ define(["jquery", "d3", "app/torus-array", "app/goodies"], function($, d3, Torus
                 d3.select(this).attr('opacity', 1);
             });
 
-            console.log("life.js: grid initialized");
+            console.log("life.js: grid initialized from",
+                        initialTorus || "default torus");
         };
 
         this.initGrid();
     } // end of life
+
+    Life.fromRLEFile = function(fileData) {
+        function getRLEData(parsedData, dataType) {
+            for(var i = 0; i < parsedData.length; i++) {
+                if(parsedData[i].type == dataType) {
+                    var data = parsedData[i];
+                    delete data["type"];
+                    return data;
+                }
+            }
+        }
+
+        var parsedData = RunLengthEncodedParser.parse(fileData);
+        var lines = getRLEData(parsedData, "lines");
+        var header = getRLEData(parsedData, "header");
+        var torus = TorusArray.fromRLEData(header, lines);
+        return new Life(torus);
+    };
 
     Life.prototype.updateGrid = function () {
         /*

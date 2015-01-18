@@ -24,8 +24,10 @@ define(function() {
          and `cols` columns, filling with zeros or provided `fillValue`)
          */
         var fillValue = fillValue || 0;
+
         if (this.length > rows || (this.length > 0 && this[0].length > cols)) {
-            console.log("Array is already larger than rows x cols requested");
+            console.warn("Given array", this, "is already larger than zfill requested",
+                         rows, "x", cols);
             return false;
         }
         for (var i = 0; i < this.length; i++) {
@@ -35,7 +37,6 @@ define(function() {
         }
         if (this.length < rows) {
             for (var i = 0; i = rows - this.length; i++) {
-                // FIXME: probably copy?
                 var zerosRow = [];
                 zerosRow.extendWith(fillValue, cols);
                 this.push(zerosRow);
@@ -123,11 +124,12 @@ define(function() {
     }
 
     TorusArray.fromRLEData = function(header, lines, topLeftCoordinates) {
-        var rows = header.x;
-        var cols = header.y;
-        var torus = new TorusArray(rows, cols),
+        var rows = header.y;
+        var cols = header.x;
+        var torus,
             torusArray = [];
 
+        var maxPatternCols = 0;
         for(var i = 0; i < lines.items.length; i++) {
             var row = [];
             var line = lines.items[i];
@@ -135,10 +137,16 @@ define(function() {
                 var count = line[j][0];
                 var value = line[j][1] == 'o' ? 1 : 0;
                 row.extendWith(value, count);
+                maxPatternCols = Math.max(maxPatternCols, row.length);
             }
             torusArray.push(row);
         }
+        var maxPatternRows = torusArray.length;
 
+        // sometimes real pattern size is bigger than declared in header
+        rows = Math.max(rows, maxPatternRows);
+        cols = Math.max(cols, maxPatternCols);
+        torus = new TorusArray(rows, cols);
         torusArray.zfill2d(rows, cols);
         torus.setArray(torusArray);
         return torus;
@@ -180,7 +188,7 @@ define(function() {
 
     TorusArray.prototype.setArray = function (arr) {
         if ((arr.length != this.rows) || (arr[0].length != this.cols)) {
-            console.log(
+            console.warn(
                 "Input array does not correspond TorusArray cols / rows instance"
             );
         }
