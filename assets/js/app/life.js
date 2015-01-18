@@ -24,11 +24,22 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
             this.rows = Math.floor(window.height / itemSize);
             this.cols = Math.floor(window.width / itemSize);
             this.torus = new TorusArray(this.rows, this.cols);
+            this.markedCells = [];
+            this.cellsAlive = 0;
         }
         else {
             this.torus = initialTorus;
             this.rows = this.torus.rows;
             this.cols = this.torus.cols;
+            this.markedCells = [];
+            for(var i = 0; i < this.torus.rows; i++) {
+                for(var j = 0; j < this.torus.cols; j++) {
+                    this.markForScan(i, j, 'add');
+                    if(this.torus.get(i, j) == 1) {
+                        this.cellsAlive++;
+                    }
+                }
+            }
         }
 
 //        this.torusQueue = [
@@ -39,8 +50,7 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
 
         this.gameTimer = undefined;
         this.generation = 0;
-        this.cellsAlive = 0;
-        this.markedCells = [];
+        this.id = Math.random();
 
         this.initGrid = function() {
             var width = (this.cols * itemSize) + margin.right + margin.left;
@@ -143,7 +153,7 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         svg.selectAll('rect[type="cell"]')
             .data(gridItems)
             .transition()
-            .duration(this.stepTime)
+            .duration(this.stepTime / 2)
             .attr('fill', function (d) {
                 return d == 1 ? '#000' : '#fff';
             });
@@ -151,6 +161,7 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         // metrics
         var endTime = performance.now();
         $(this).trigger('updateGridFinished', [endTime - startTime]);
+        console.log("updated grid", gridItems);
     };
 
     Life.prototype.markForScan = function (i, j, operation) {
@@ -211,6 +222,7 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         var startTime = performance.now();
 
         var nextTorus = new TorusArray(this.torus.rows, this.torus.cols);
+
         //var nextTorus = this.torusQueue.shift();
 
         var cellsSeen = 0,
