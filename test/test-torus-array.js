@@ -166,7 +166,7 @@ describe('TorusArray', function () {
     });
 
     describe('fromRLEData', function() {
-        var header = {x: 5, y: 10};
+        var header = {x: 10, y: 5};
         var lines = {
             items: [
                 [
