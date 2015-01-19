@@ -34,7 +34,10 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
             this.markedCells = [];
             for(var i = 0; i < this.torus.rows; i++) {
                 for(var j = 0; j < this.torus.cols; j++) {
-                    this.markForScan(i, j, 'add');
+                    this.markedCells.push(
+                        this.torus.absoluteIndex(i, j)
+                    );
+
                     if(this.torus.get(i, j) == 1) {
                         this.cellsAlive++;
                     }
@@ -76,20 +79,28 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
 
             // add rows
             var rows = fieldmap.selectAll('g')
-                .data(this.torus.toArray())
-                .enter()
+                .data(this.torus.toArray());
+
+            console.log("rows", rows);
+
+            rows.enter()
                 .append('g')
                 // shift each row from top by its number
                 .attr('transform', function (d, i) {
                     return 'translate(0, ' + itemSize * i + ')';
                 });
 
+            rows.exit().remove();
+
             // for each row draw cells
-            rows.selectAll()
+            var allRows = rows.selectAll()
                 .data(function (d) {
                     return d;
-                })
-                .enter()
+                });
+
+            console.log("all rows", allRows);
+
+            allRows.enter()
                 .append('rect')
                 .attr('type', 'cell')
                 .attr('width', cellSize)
@@ -100,6 +111,8 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
                 .attr('x', function (d, i) {
                     return itemSize * i;
                 });
+
+            allRows.exit().remove();
 
             // cell actions
             var cells = svg.selectAll('rect[type="cell"]');
@@ -150,6 +163,9 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         var gridItems = d3.merge(grid);
 
         var svg = d3.select('[role="fieldmap"]');
+        console.log("elements under update",
+                    svg.selectAll('rect[type="cell"]'),
+                    "torus", gridItems.length);
         svg.selectAll('rect[type="cell"]')
             .data(gridItems)
             .transition()
@@ -161,7 +177,6 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         // metrics
         var endTime = performance.now();
         $(this).trigger('updateGridFinished', [endTime - startTime]);
-        console.log("updated grid", gridItems);
     };
 
     Life.prototype.markForScan = function (i, j, operation) {
