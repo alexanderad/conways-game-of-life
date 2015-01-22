@@ -12,3 +12,10 @@ This is yet another implementation of [Conway's Game of Life](http://en.wikipedi
   ```
   
 2. Navigate to [http://localhost:3000](http://localhost:3000)
+
+## Developer's mode
+
+    ```shell
+    $ npm install supervisor
+    $ supervisor app.js
+    ```
