@@ -60,9 +60,8 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
             var height = (this.rows * itemSize) + margin.top + margin.bottom;
 
             var svg = d3.select('svg[role="fieldmap"]');
-            svg
-                .attr('width', width)
-                .attr('height', height);
+            svg.attr('width', width)
+               .attr('height', height);
 
             var background = svg.select('rect[role="background"]');
             if (background.empty()) {
@@ -86,15 +85,18 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
                     .attr('role', 'field');
             }
 
-            field
-                .attr('transform',
-                      'translate(' + (margin.left) + ',' + (margin.top) + ')');
+            field.attr('transform',
+                       'translate(' + (margin.left) + ',' + (margin.top) + ')');
 
             // add rows
             var rows = field
                 .selectAll('g')
-                .data(this.torus.toArray())
-                .enter()
+                .data(this.torus.toArray());
+
+            // for reinitialization, remove extra rows
+            rows.exit().remove();
+
+            rows.enter()
                 .append('g')
                 // shift each row from top by its number
                 .attr('transform', function (d, i) {
@@ -102,10 +104,16 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
                 });
 
             // for each row draw cells
-            rows.selectAll()
+            var rowCells = rows.selectAll()
                 .data(function (d) {
                     return d;
-                })
+                });
+
+            // remove any previously added cells
+            // FIXME: how to do that properly with .exit().remove()?
+            field.selectAll('rect').remove();
+
+            rowCells
                 .enter()
                 .append('rect')
                 .attr('type', 'cell')
@@ -119,7 +127,7 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
                 });
 
             // cell actions
-            var cells = svg.selectAll('rect[type="cell"]');
+            var cells = field.selectAll('rect[type="cell"]');
 
             var instance = this;
             cells.on('click', function(d, i) {
@@ -167,10 +175,6 @@ define(["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"], fun
         var gridItems = d3.merge(grid);
 
         var svg = d3.select('[role="fieldmap"]');
-        console.log("elements under update",
-                    svg.selectAll('rect[type="cell"]'),
-                    "torus", gridItems.length);
-
         svg.selectAll('rect[type="cell"]')
             .data(gridItems)
             .transition()

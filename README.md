@@ -19,3 +19,7 @@ This is yet another implementation of [Conway's Game of Life](http://en.wikipedi
   $ npm install -g supervisor
   $ supervisor app.js
   ```
+
+## Bookmarks
+* [D3.js](http://d3js.org)
+* [D3.js: Thinking with Joins](http://bost.ocks.org/mike/join/)
