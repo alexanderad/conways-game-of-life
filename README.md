@@ -15,7 +15,7 @@ This is yet another implementation of [Conway's Game of Life](http://en.wikipedi
 
 ## Developer's mode
 
-    ```shell
-    $ npm install supervisor
-    $ supervisor app.js
-    ```
+  ```shell
+  $ npm install -g supervisor
+  $ supervisor app.js
+  ```
