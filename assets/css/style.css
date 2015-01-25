@@ -61,3 +61,24 @@ li.item-file {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.rle-panel {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 300px;
+}
+
+.rle-panel ul {
+    list-style-type: square;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+
+.rle-panel label {
+    margin-bottom: 0px;
+}
+
+.rle-panel li {
+    list-style-type: none;
+    padding-left: 10px;
+}

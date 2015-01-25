@@ -72,5 +72,9 @@ define(["app/life", "bootstrap"], function(Life) {
         });
     }
 
-    loadRLEFilesList();
+    $('label.tree-toggler').click(function () {
+        $(this).parent().children('ul.tree').toggle(300);
+    });
+
+//    loadRLEFilesList();
 });
