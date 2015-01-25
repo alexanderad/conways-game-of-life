@@ -19,7 +19,10 @@ else
 fi
 
 echo "Unpacking patterns..."
-unzip $OUTPUT_FILE -d ../patterns/
-find ../patterns/ -type f ! -name *.rle -delete
+unzip -o $OUTPUT_FILE -d ../patterns/
 
-echo "Done."
+echo "Cleaning up..."
+find ../patterns/ -type f ! -name *.rle -delete
+touch ../patterns/.directory
+
+echo "All done."
