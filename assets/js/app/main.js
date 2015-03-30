@@ -50,13 +50,13 @@ define(["app/life", "bootstrap"], function(Life) {
 
     function loadRLEFilesList() {
         $.get('/rle/list', function(response) {
-            var responseContainer = $("#id_rle_panel_body");
+            var responseContainer = $("#id_rle_panel_items");
             responseContainer.text('');
             if(response.success) {
                 responseContainer.append('<ul>');
                 for(var i = 0; i < response.files.length; i++) {
                     responseContainer.append([
-                        '<li class="item-file">',
+                        '<li>',
                             '<a href="#" data-file="' + response.files[i] + '">',
                                 response.files[i],
                             '</a>',
@@ -64,7 +64,7 @@ define(["app/life", "bootstrap"], function(Life) {
                     ].join(''));
                 }
                 responseContainer.append('</ul>');
-                $("li.item-file a").on('click', function () {
+                $("#id_rle_panel_items li > a").on('click', function () {
                     var fileName = $(this).attr('data-file');
                     loadRLEFile(fileName);
                 });
@@ -76,5 +76,5 @@ define(["app/life", "bootstrap"], function(Life) {
         $(this).parent().children('ul.tree').toggle(300);
     });
 
-//    loadRLEFilesList();
+    loadRLEFilesList();
 });
