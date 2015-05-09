@@ -77,3 +77,7 @@ li.item-file {
 .rle-panel li {
     padding-left: 10px;
 }
+
+.left-bottom .github-fork-ribbon {
+    background-color: #f80;
+}
