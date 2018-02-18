@@ -1,83 +1,111 @@
+html,
+body,
+#center-container {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#center-container td {
+  vertical-align: middle;
+  text-align: center;
+}
+
 .main {
-    margin: 20px;
+  margin: 20px;
 }
 
 .stats-container .bold {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .stats-container .right {
-    text-align: right;
+  text-align: right;
 }
 
 .stats-container .code {
-    font-family: monospace;
+  font-family: monospace;
 }
 
 .dropdown-menu a {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+.fieldmap {
+  border: solid 1px #ccc;
 }
 
 .fieldmap .axis path {
-    display: none;
+  display: none;
 }
 .fieldmap .axis line {
-    display: none;
+  display: none;
 }
 .fieldmap .axis text {
-    font-size: 9px
+  font-size: 9px;
 }
 
 .fieldmap rect {
-    cursor: crosshair;
+  cursor: crosshair;
 }
 
 .panel {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .controls-panel {
-    position: absolute;
-    z-index: 100;
-    top: 1%;
-    right: 1%;
-    bottom: 1%;
-    width: 170px;
+  position: absolute;
+  z-index: 100;
+  top: 1%;
+  right: 1%;
+  bottom: 1%;
+  width: 170px;
 }
 
 .controls-panel .panel-heading {
-    padding: 5px;
-    font-weight: bold;
+  padding: 5px;
+  font-weight: bold;
 }
 
-.controls-panel .panel-body, .controls-panel .list-group-item {
-    padding: 5px;
+.controls-panel .panel-body,
+.controls-panel .list-group-item {
+  padding: 5px;
 }
 
 li.item-file {
-    max-width: 170px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rle-panel {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: 350px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 350px;
 }
 
 .rle-panel ul {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 .rle-panel label {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .rle-panel li {
-    padding-left: 10px;
+  padding-left: 10px;
 }
 
 .left-bottom .github-fork-ribbon {
-    background-color: #f80;
+  background-color: #f80;
+}
+
+.search-field {
+  width: 83%;
+}
+
+.search-field-icon {
+  padding-left: 5px;
+  padding-right: 5px;
 }

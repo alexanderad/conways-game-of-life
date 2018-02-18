@@ -52,20 +52,25 @@
           </ul>
       </div>
       <div class="panel panel-info">
-          <div class="panel-heading">RLE browser</div>
+          <div class="panel-heading">
+              <div>RLE Patterns: <span id="id_search_count">0</span></div>
+              <span class="glyphicon glyphicon-search search-field-icon" aria-hidden="true"></span><input type="text" class="search-field">
+          </div>
           <div class="panel-body rle-panel" id="id_rle_panel_body">
               <ul class="nav nav-list">
-                  <!--<li><label class="tree-toggler nav-header">All files</label>-->
-                      <ul class="nav nav-list tree" id="id_rle_panel_items">
-
-                      </ul>
-                  <!--</li>-->
+                    <ul class="nav nav-list tree" id="id_rle_panel_items"></ul>
               </ul>
           </div>
       </div>
   </div>
 
-  <svg role="fieldmap" class="fieldmap"></svg>
+
+  <table id="center-container">
+    <tr>
+      <td><svg role="fieldmap" class="fieldmap"></svg></td>
+    </tr>
+  </table>
+
 
   <div class="github-fork-ribbon-wrapper left-bottom">
       <div class="github-fork-ribbon">
