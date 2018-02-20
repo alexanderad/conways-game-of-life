@@ -51,7 +51,7 @@ define(["app/life", "bootstrap"], function(Life) {
     });
   }
 
-  function loadRLEFilesList(q) {
+  function loadRLEList(q) {
     var url = "/rle/list";
     if (typeof q !== "undefined") {
       url = url + "?q=" + q;
@@ -61,21 +61,33 @@ define(["app/life", "bootstrap"], function(Life) {
 
       if (response.success) {
         $("#id_search_count").text(response.count);
-        responseContainer.text("");
-        responseContainer.append("<ul>");
-        for (var i = 0; i < response.files.length; i++) {
-          responseContainer.append(
-            [
-              "<li>",
-              '<a href="#" data-file="' + response.files[i] + '">',
-              response.files[i],
-              "</a>",
-              "</li>"
-            ].join("")
-          );
-        }
-        responseContainer.append("</ul>");
-        $("#id_rle_panel_items li > a").on("click", function() {
+        responseContainer.empty();
+        response.patterns.forEach(pattern => {
+          responseContainer.append([
+            `
+            <li class="list-group-item">
+              <div>
+                <a href="#" class="rle-link" data-file="${pattern.fileName}">${
+              pattern.name
+            }</a>
+               &middot; ${pattern.author || "Uknown author"}</div>
+               <div>
+                  <small>${pattern.comments || ""}</small>
+                  <small>
+                    ${
+                      typeof pattern.wiki !== "undefined"
+                        ? `&middot; <a target="_blank" href="${
+                            pattern.wiki
+                          }">wiki</a>`
+                        : ""
+                    }
+                  </small>
+              </div>
+            </li>
+            `
+          ]);
+        });
+        $("a.rle-link").on("click", function() {
           var fileName = $(this).attr("data-file");
           loadRLEFile(fileName);
         });
@@ -91,8 +103,8 @@ define(["app/life", "bootstrap"], function(Life) {
   });
 
   $(".search-field").on("keyup", function(e) {
-    loadRLEFilesList(e.currentTarget.value);
+    loadRLEList(e.currentTarget.value);
   });
 
-  loadRLEFilesList();
+  loadRLEList();
 });

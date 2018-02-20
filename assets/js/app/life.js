@@ -3,8 +3,8 @@ define(
   function($, d3, TorusArray, RunLengthEncodedParser) {
     function Life(initialTorus) {
       /*
-         * Represents a Life field.
-         */
+       * Represents a Life field.
+       */
 
       // overall configuration
       var itemSize = 15,

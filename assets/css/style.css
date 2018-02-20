@@ -60,7 +60,7 @@ body,
   top: 1%;
   right: 1%;
   bottom: 1%;
-  width: 170px;
+  width: 300px;
 }
 
 .controls-panel .panel-heading {
@@ -79,22 +79,10 @@ li.item-file {
   text-overflow: ellipsis;
 }
 
-.rle-panel {
+#id_rle_panel_items {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 350px;
-}
-
-.rle-panel ul {
-  padding-left: 0;
-}
-
-.rle-panel label {
-  margin-bottom: 0;
-}
-
-.rle-panel li {
-  padding-left: 10px;
 }
 
 .left-bottom .github-fork-ribbon {
