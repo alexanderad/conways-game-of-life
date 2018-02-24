@@ -155,7 +155,7 @@ define(function() {
 
   TorusArray.fromRLEData = function(header, lines) {
     // allow extra X columns and rows around boundaries of the pattern
-    var globalOffset = 10;
+    var globalOffset = 2;
 
     var torus,
       torusArray = [];

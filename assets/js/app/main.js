@@ -1,5 +1,5 @@
 define(["app/life", "bootstrap"], function(Life) {
-  var life = new Life();
+  var life = new Life($("#id-game-field"));
   bindEvents(life);
 
   function bindEvents(lifeInstance) {
@@ -43,7 +43,7 @@ define(["app/life", "bootstrap"], function(Life) {
   function loadRLEFile(fileName) {
     $.get("/rle/get/" + fileName, function(response) {
       if (response.success) {
-        life = Life.fromRLEFile(response.fileData);
+        life = Life.fromRLEFile($("#id-game-field"), response.fileData);
         bindEvents(life);
       } else {
         console.error(response);

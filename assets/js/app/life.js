@@ -1,32 +1,40 @@
 define(
   ["jquery", "d3", "app/torus-array", "app/rle-parser", "app/goodies"],
   function($, d3, TorusArray, RunLengthEncodedParser) {
-    function Life(initialTorus) {
+    function Life(container, initialTorus) {
       /*
        * Represents a Life field.
        */
 
       // overall configuration
-      var itemSize = 16,
-        cellSize = itemSize - 1,
-        margin = {
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0
-        };
+      var viewportWidth = container.width();
+      var viewportHeight = container.height();
+      var itemSize, cellSize;
+      var margin = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      };
 
       // instance variables
       this.stepTime = 100;
 
       if (typeof initialTorus == "undefined") {
         // balance number of cells / width to fill screen
-        this.rows = Math.floor($(".with-game-field").height() / itemSize);
-        this.cols = Math.floor($(".with-game-field").width() / itemSize);
+        itemSize = 16;
+        cellSize = itemSize - 1;
+
+        this.rows = Math.floor(viewportHeight / itemSize);
+        this.cols = Math.floor(viewportWidth / itemSize);
         this.torus = new TorusArray(this.rows, this.cols);
         this.markedCells = [];
         this.cellsAlive = 0;
       } else {
+        // dynamically determine size
+        itemSize = 15;
+        cellSize = itemSize - 1;
+
         this.torus = initialTorus;
         this.rows = this.torus.rows;
         this.cols = this.torus.cols;
@@ -48,6 +56,10 @@ define(
       this.initGrid = function() {
         var width = this.cols * itemSize + margin.right + margin.left;
         var height = this.rows * itemSize + margin.top + margin.bottom;
+
+        container
+          .empty()
+          .append('<svg role="fieldmap" class="fieldmap"></svg>');
 
         var svg = d3.select('svg[role="fieldmap"]');
         svg.attr("width", width).attr("height", height);
@@ -136,7 +148,7 @@ define(
       this.initGrid();
     } // end of life
 
-    Life.fromRLEFile = function(fileData) {
+    Life.fromRLEFile = function(container, fileData) {
       function getRLEData(parsedData, dataType) {
         for (var i = 0; i < parsedData.length; i++) {
           if (parsedData[i].type == dataType) {
@@ -151,7 +163,7 @@ define(
       var lines = getRLEData(parsedData, "lines");
       var header = getRLEData(parsedData, "header");
       var torus = TorusArray.fromRLEData(header, lines);
-      return new Life(torus);
+      return new Life(container, torus);
     };
 
     Life.prototype.updateGrid = function() {
@@ -234,8 +246,6 @@ define(
       var startTime = performance.now();
 
       var nextTorus = new TorusArray(this.torus.rows, this.torus.cols);
-
-      //var nextTorus = this.torusQueue.shift();
 
       var cellsSeen = 0,
         cellsAlive = 0;
