@@ -17,11 +17,37 @@ define(function() {
     }
   };
 
+  Array.prototype.nRows = function() {
+    return this.length;
+  };
+
+  Array.prototype.nCols = function() {
+    return this[0].length;
+  };
+
+  Array.prototype.resize = function(rows, cols) {
+    var extraColumns = Math.floor((cols - this.nCols()) / 2);
+    this.forEach(row => {
+      for (var i = 0; i < extraColumns; i++) {
+        row.unshift(0);
+        row.push(0);
+      }
+    });
+
+    var extraRows = Math.floor((rows - this.nRows()) / 2);
+    for (var i = 0; i < extraRows; i++) {
+      var emptyRow = [];
+      emptyRow.extendWith(0, this.nCols());
+      this.unshift(emptyRow);
+      this.push(emptyRow);
+    }
+  };
+
   Array.prototype.zfill2d = function(rows, cols, fillValue) {
     /*
-         * Two-dimensional array zfill (extends array to `rows` rows
-         and `cols` columns, filling with zeros or provided `fillValue`)
-         */
+    * Two-dimensional array zfill (extends array to `rows` rows
+    * and `cols` columns, filling with zeros or provided `fillValue`)
+    */
     var fillValue = fillValue || 0;
 
     if (this.length > rows || (this.length > 0 && this[0].length > cols)) {
@@ -153,23 +179,10 @@ define(function() {
     cols = Math.max(header.x, maxPatternCols);
 
     // extend with global offset
-    torusArray.forEach(row => {
-      for (var i = 0; i < globalOffset; i++) {
-        row.unshift(0);
-        row.push(0);
-      }
-    });
-    for (var i = 0; i < globalOffset; i++) {
-      var emptyRow = [];
-      emptyRow.extendWith(0, cols + globalOffset * 2);
-      torusArray.unshift(emptyRow);
-      torusArray.push(emptyRow);
-    }
-    rows += globalOffset * 2;
-    cols += globalOffset * 2;
-
-    torus = new TorusArray(rows, cols);
     torusArray.zfill2d(rows, cols);
+    torusArray.resize(rows + globalOffset * 2, cols + globalOffset * 2);
+
+    torus = new TorusArray(torusArray.nRows(), torusArray.nCols());
     torus.setArray(torusArray);
     return torus;
   };
