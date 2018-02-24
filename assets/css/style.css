@@ -13,8 +13,9 @@ body {
 }
 
 .column.with-patterns-explorer {
-  background-color: blanchedalmond;
-  overflow: auto;
+  background-color: #f2f2f2;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .column.with-game-field {
@@ -41,4 +42,30 @@ body {
 
 .fieldmap rect {
   cursor: crosshair;
+}
+
+.inner-padding {
+  padding: 0.75rem;
+}
+
+/* .patterns-list {
+  padding-left: 1rem;
+  padding-right: 1rem;
+} */
+
+.list-item {
+  /* padding-top: 0.5rem; */
+  /* padding-bottom: 0.5rem; */
+  border-bottom: dashed 1px hsl(0, 0%, 21%);
+}
+
+.controls-box {
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.box:not(:last-child),
+.field:not(:last-child) {
+  margin-bottom: 0;
 }

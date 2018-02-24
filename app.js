@@ -22,7 +22,7 @@ app.get("/rle/list", function(req, res) {
   var filtered_patterns = patternsDatabase.filter(function(pattern) {
     var is_match = true;
     if (typeof q !== "undefined" && q.length > 0) {
-      is_match = pattern.name.search(q) >= 0;
+      is_match = pattern.name.toLowerCase().search(q.toLowerCase()) >= 0;
     }
     return is_match;
   });

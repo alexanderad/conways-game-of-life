@@ -22,7 +22,7 @@ define(["app/life", "bootstrap"], function(Life) {
   $("#id_toggle_btn").click(function() {
     var btn = $("#id_toggle_btn");
     var btn_span = $("#id_toggle_btn > span");
-    if (btn.hasClass("btn-success")) {
+    if (btn.hasClass("is-success")) {
       life.gameTimer = setInterval(function() {
         var markedCells = life.evolve();
         if (markedCells == 0) {
@@ -30,13 +30,13 @@ define(["app/life", "bootstrap"], function(Life) {
         }
       }, life.stepTime);
 
-      btn.removeClass("btn-success").addClass("btn-danger");
-      btn_span.removeClass("glyphicon-play").addClass("glyphicon-pause");
+      btn.removeClass("is-success").addClass("is-danger");
+      btn_span.empty().append('<i class="fas fa-pause"></i>');
     } else {
       clearTimeout(life.gameTimer);
 
-      btn.removeClass("btn-danger").addClass("btn-success");
-      btn_span.removeClass("glyphicon-pause").addClass("glyphicon-play");
+      btn.removeClass("is-danger").addClass("is-success");
+      btn_span.empty().append('<i class="fas fa-play"></i>');
     }
   });
 
@@ -57,36 +57,37 @@ define(["app/life", "bootstrap"], function(Life) {
       url = url + "?q=" + q;
     }
     $.get(url, function(response) {
-      var responseContainer = $("#id_rle_panel_items");
+      var responseContainer = $("#id-list");
 
       if (response.success) {
         $("#id_search_count").text(response.count);
         responseContainer.empty();
         response.patterns.forEach(pattern => {
-          responseContainer.append([
+          responseContainer.append(
             `
-            <li class="list-group-item">
-              <div>
-                <a href="#" class="rle-link" data-file="${pattern.fileName}">${
+            <div class="list-item">
+            <div>
+            <a href="#" class="rle-link" data-file="${pattern.fileName}">${
               pattern.name
             }</a>
-               &middot; ${pattern.author || "Uknown author"}</div>
-               <div>
-                  <small>${pattern.comments || ""}</small>
-                  <small>
-                    ${
-                      typeof pattern.wiki !== "undefined"
-                        ? `&middot; <a target="_blank" href="${
-                            pattern.wiki
-                          }">wiki</a>`
-                        : ""
-                    }
-                  </small>
-              </div>
-            </li>
+
+          </div>
+          <small>
+            <b>${pattern.author || "Uknown author"}</b>
+            ${
+              typeof pattern.wiki !== "undefined"
+                ? `&middot; <a target="_blank" href="${pattern.wiki}">wiki</a>`
+                : ""
+            }
+          </small>
+          <div>
+              <small>${pattern.comments || ""}</small>
+          </div>
+          </div>
             `
-          ]);
+          );
         });
+
         $("a.rle-link").on("click", function() {
           var fileName = $(this).attr("data-file");
           loadRLEFile(fileName);
@@ -94,13 +95,6 @@ define(["app/life", "bootstrap"], function(Life) {
       }
     });
   }
-
-  $("label.tree-toggler").click(function() {
-    $(this)
-      .parent()
-      .children("ul.tree")
-      .toggle(300);
-  });
 
   $(".search-field").on("keyup", function(e) {
     loadRLEList(e.currentTarget.value);

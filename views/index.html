@@ -22,27 +22,56 @@
 
     <div class="columns is-gapless">
 
-        <div class="column with-game-field is-four-fifths">
+        <div class="column with-game-field">
             <svg role="fieldmap" class="fieldmap"></svg>
         </div>
 
-        <div class="column with-patterns-explorer">
-
-
-            <nav class="level">
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Cells Alive</p>
-                        <p class="title" id="id_stats_cells_alive">0</p>
+        <div class="column is-one-fifth with-patterns-explorer">
+            <!-- <div class="columns is-multiline">
+                <div class="column"> -->
+            <div class="box controls-box">
+                <div class="columns">
+                    <div class="column is-half">
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p class="heading">Cells</p>
+                                <p class="title" id="id_stats_cells_alive">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-half">
+                        <div class="level-item has-text-centered">
+                            <div>
+                                <p class="heading">Generation</p>
+                                <p class="title" id="id_stats_generation">0</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="level-item has-text-centered">
-                    <div>
-                        <p class="heading">Generation</p>
-                        <p class="title" id="id_stats_generation">0</p>
-                    </div>
-                </div>
-            </nav>
+            </div>
+
+            <div class="field inner-padding">
+                <p class="control has-icons-left">
+                    <input class="input search-field" type="email" placeholder="Search patterns">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </p>
+                <p class="help">Patterns:
+                    <span id="id_search_count">loading...</span>
+                </p>
+            </div>
+
+            <div class="field inner-padding">
+                <a class="button is-success" id="id_toggle_btn">
+                    <span class="icon is-small">
+                        <i class="fas fa-play"></i>
+                    </span>
+                </a>
+            </div>
+
+            <div class="patterns-list inner-padding" id="id-list">
+            </div>
 
 
         </div>
