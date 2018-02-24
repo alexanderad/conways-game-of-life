@@ -1,78 +1,57 @@
-
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html>
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Conway's Game of Life</title>
 
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
-    <!--[if lt IE 9]>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.ie.min.css" />
-    <![endif]-->
-
+    <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
     <script data-main="/static/js/app" src="/static/js/lib/require.js"></script>
-  </head>
+</head>
 
-  <body>
-
-  <div class="controls-panel">
-      <div class="panel panel-warning">
-          <div class="panel-heading">Controls</div>
-          <div class="panel-body">
-              <button id="id_toggle_btn" class="btn btn-xs btn-success">
-                  <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-              </button>
-          </div>
-      </div>
-      <div class="panel panel-success">
-          <div class="panel-heading">Stats</div>
-          <ul class="list-group">
-              <li class="list-group-item">Generation
-                  <span class="badge" id="id_stats_generation">0</span>
-              </li>
-              <li class="list-group-item">Cells alive
-                  <span class="badge" id="id_stats_cells_alive">0</span>
-              </li>
-              <li class="list-group-item">Evolution, ms
-                  <span class="badge" id="id_stats_step_evolution_ms">0</span>
-              </li>
-              <li class="list-group-item">Render grid, ms
-                  <span class="badge" id="id_stats_render_grid_ms">0</span>
-              </li>
-          </ul>
-      </div>
-      <div class="panel panel-info">
-          <div class="panel-heading">
-              <div>RLE Patterns: <span id="id_search_count">loading...</span></div>
-              <span class="glyphicon glyphicon-search search-field-icon" aria-hidden="true"></span><input type="text" class="search-field">
-          </div>
-          <ul class="list-group" id="id_rle_panel_items"></ul>
-      </div>
-  </div>
+<body>
 
 
-  <table id="center-container">
-    <tr>
-      <td><svg role="fieldmap" class="fieldmap"></svg></td>
-    </tr>
-  </table>
+
+    <div class="columns is-gapless">
+
+        <div class="column with-game-field is-four-fifths">
+            <svg role="fieldmap" class="fieldmap"></svg>
+        </div>
+
+        <div class="column with-patterns-explorer">
 
 
-  <div class="github-fork-ribbon-wrapper left-bottom">
-      <div class="github-fork-ribbon">
-          <a href="https://github.com/alexanderad/conways-game-of-life">Fork me on GitHub</a>
-      </div>
-  </div>
+            <nav class="level">
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Cells Alive</p>
+                        <p class="title" id="id_stats_cells_alive">0</p>
+                    </div>
+                </div>
+                <div class="level-item has-text-centered">
+                    <div>
+                        <p class="heading">Generation</p>
+                        <p class="title" id="id_stats_generation">0</p>
+                    </div>
+                </div>
+            </nav>
 
-  </body>
+
+        </div>
+
+
+    </div>
+
+
+
+</body>
+
 </html>

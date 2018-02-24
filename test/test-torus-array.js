@@ -182,16 +182,16 @@ describe('TorusArray', function () {
             ]
         };
         it('returns TorusArray', function() {
-           var torus = TorusArray.fromRLEData(header, lines, {});
+           var torus = TorusArray.fromRLEData(header, lines);
            assert.isObject(torus);
         });
         it('reads header correctly', function() {
-            var torus = TorusArray.fromRLEData(header, lines, {});
+            var torus = TorusArray.fromRLEData(header, lines);
             assert.equal(torus.rows, 5);
             assert.equal(torus.cols, 10);
         });
         it('reads lines correctly', function() {
-            var torus = TorusArray.fromRLEData(header, lines, {});
+            var torus = TorusArray.fromRLEData(header, lines);
             assert.deepEqual(
                 torus.toArray(),
                 [

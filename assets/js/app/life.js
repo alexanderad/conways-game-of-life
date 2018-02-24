@@ -7,7 +7,7 @@ define(
        */
 
       // overall configuration
-      var itemSize = 15,
+      var itemSize = 16,
         cellSize = itemSize - 1,
         margin = {
           top: 0,
@@ -21,8 +21,8 @@ define(
 
       if (typeof initialTorus == "undefined") {
         // balance number of cells / width to fill screen
-        this.rows = Math.floor(window.height / itemSize);
-        this.cols = Math.floor(window.width / itemSize);
+        this.rows = Math.floor($(".with-game-field").height() / itemSize);
+        this.cols = Math.floor($(".with-game-field").width() / itemSize);
         this.torus = new TorusArray(this.rows, this.cols);
         this.markedCells = [];
         this.cellsAlive = 0;
@@ -34,19 +34,12 @@ define(
         for (var i = 0; i < this.torus.rows; i++) {
           for (var j = 0; j < this.torus.cols; j++) {
             this.markedCells.push(this.torus.absoluteIndex(i, j));
-
             if (this.torus.get(i, j) == 1) {
               this.cellsAlive++;
             }
           }
         }
       }
-
-      //        this.torusQueue = [
-      //            new TorusArray(this.rows, this.cols),
-      //            new TorusArray(this.rows, this.cols)
-      //        ];
-      //        this.torus = this.torusQueue[0];
 
       this.gameTimer = undefined;
       this.generation = 0;

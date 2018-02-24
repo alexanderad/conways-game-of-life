@@ -1,39 +1,32 @@
-html,
-body,
-#center-container {
+html {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
   height: 100%;
   width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-#center-container td {
-  vertical-align: middle;
-  text-align: center;
 }
 
-.main {
-  margin: 20px;
+.columns {
+  height: 100%;
 }
 
-.stats-container .bold {
-  font-weight: bold;
+.column.with-patterns-explorer {
+  background-color: blanchedalmond;
+  overflow: auto;
 }
 
-.stats-container .right {
-  text-align: right;
-}
-
-.stats-container .code {
-  font-family: monospace;
-}
-
-.dropdown-menu a {
-  text-decoration: none;
+.column.with-game-field {
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .fieldmap {
   border: solid 1px #ccc;
+  z-index: 0;
 }
 
 .fieldmap .axis path {
@@ -48,52 +41,4 @@ body,
 
 .fieldmap rect {
   cursor: crosshair;
-}
-
-.panel {
-  margin-bottom: 5px;
-}
-
-.controls-panel {
-  position: absolute;
-  z-index: 100;
-  top: 1%;
-  right: 1%;
-  bottom: 1%;
-  width: 300px;
-}
-
-.controls-panel .panel-heading {
-  padding: 5px;
-  font-weight: bold;
-}
-
-.controls-panel .panel-body,
-.controls-panel .list-group-item {
-  padding: 5px;
-}
-
-li.item-file {
-  max-width: 170px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#id_rle_panel_items {
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 350px;
-}
-
-.left-bottom .github-fork-ribbon {
-  background-color: #f80;
-}
-
-.search-field {
-  width: 83%;
-}
-
-.search-field-icon {
-  padding-left: 5px;
-  padding-right: 5px;
 }
