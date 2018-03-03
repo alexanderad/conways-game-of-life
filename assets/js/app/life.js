@@ -19,10 +19,12 @@ define(
 
       // instance variables
       this.stepTime = 100;
+      this.defaultItemSize = 16;
+      this.minItemSize = 3;
 
       if (typeof initialTorus == "undefined") {
         // balance number of cells / width to fill screen
-        itemSize = 16;
+        itemSize = this.defaultItemSize;
         cellSize = itemSize - 1;
 
         this.rows = Math.floor(viewportHeight / itemSize);
@@ -32,7 +34,39 @@ define(
         this.cellsAlive = 0;
       } else {
         // dynamically determine size
-        itemSize = 15;
+        var patternWidth = initialTorus.cols;
+        var patternHeight = initialTorus.rows;
+        if (patternWidth > patternHeight) {
+          itemSize = Math.floor(viewportWidth / patternWidth);
+        } else {
+          itemSize = Math.floor(viewportHeight / patternHeight);
+        }
+        itemSize = Math.min(itemSize, this.defaultItemSize);
+        itemSize = Math.max(itemSize, this.minItemSize);
+
+        console.log("pattern width", patternWidth);
+        console.log("pattern height", patternHeight);
+        console.log("item size", itemSize);
+
+        var patternMaxWidth = Math.floor(viewportWidth / itemSize);
+        var patternMaxHeight = Math.floor(viewportHeight / itemSize);
+        console.log("field can fit", patternMaxHeight, patternMaxWidth);
+
+        // resize
+        // console.log(initialTorus.grid);
+        // initialTorus.grid.resize(patternWidth + 10, patternMaxWidth + 10);
+
+        var newInitialTorus = new TorusArray(
+          initialTorus.grid.nRows(),
+          initialTorus.grid.nCols()
+        );
+        newInitialTorus.setArray(initialTorus.grid);
+        console.log(newInitialTorus);
+
+        // initialTorus.cols = patternMaxWidth;
+        // initialTorus.rows = patternMaxHeight;
+        // console.log(initialTorus.grid);
+
         cellSize = itemSize - 1;
 
         this.torus = initialTorus;
