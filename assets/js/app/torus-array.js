@@ -45,9 +45,9 @@ define(function() {
 
   Array.prototype.zfill2d = function(rows, cols, fillValue) {
     /*
-    * Two-dimensional array zfill (extends array to `rows` rows
-    * and `cols` columns, filling with zeros or provided `fillValue`)
-    */
+     * Two-dimensional array zfill (extends array to `rows` rows
+     * and `cols` columns, filling with zeros or provided `fillValue`)
+     */
     var fillValue = fillValue || 0;
 
     if (this.length > rows || (this.length > 0 && this[0].length > cols)) {
@@ -77,8 +77,8 @@ define(function() {
 
   Array.prototype.crop2d = function(row1, col1, row2, col2) {
     /*
-         * Crop an area identified by (row1, col1), (row2, col2) region
-         */
+     * Crop an area identified by (row1, col1), (row2, col2) region
+     */
     var resultArray = [];
     var rows = this.slice(row1, row2 + 1);
     for (var i = 0; i < rows.length; i++) {
@@ -155,7 +155,7 @@ define(function() {
 
   TorusArray.fromRLEData = function(header, lines) {
     // allow extra X columns and rows around boundaries of the pattern
-    var globalOffset = 2;
+    var globalOffset = 7;
 
     var torus,
       torusArray = [];
