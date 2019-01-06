@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 echo "Downloading patterns from LifeWiki..."
 URL="http://www.conwaylife.com/patterns/all.zip"
 OUTPUT_FILE="patterns/all.zip"

@@ -121,8 +121,11 @@ function loadPatternsDatabase() {
 
 loadPatternsDatabase();
 
+const PORT = 3000;
+const HOST = "0.0.0.0";
+
 // server
-var server = app.listen(3000, "localhost", function() {
+var server = app.listen(PORT, HOST, function() {
   var host = server.address().address;
   var port = server.address().port;
   console.log("Listening at %s:%s...", host, port);

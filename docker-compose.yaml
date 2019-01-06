@@ -1,0 +1,6 @@
+version: "2"
+services:
+  app:
+    image: alexanderad/conwayslife:latest
+    ports:
+      - "127.0.0.1:8001:3000"
